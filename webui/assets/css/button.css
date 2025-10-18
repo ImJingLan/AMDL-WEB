@@ -1,0 +1,568 @@
+/* From Uiverse.io by StealthWorm */ 
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 10px;
+  color: white;
+  text-shadow: 2px 2px rgb(116, 116, 116);
+  text-transform: uppercase;
+  cursor: pointer;
+  border: solid 2px black;
+  letter-spacing: 1px;
+  font-weight: 600;
+  font-size: 17px;
+  background-color: hsl(49deg 98% 60%);
+  border-radius: 50px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+button:active {
+  transform: scale(0.9);
+  transition: all 100ms ease;
+}
+
+button svg {
+  transition: all 0.5s ease;
+  z-index: 2;
+}
+
+.play {
+  transition: all 0.5s ease;
+  transition-delay: 300ms;
+  text-shadow: none;
+}
+
+button:hover svg {
+  transform: scale(3) translate(50%);
+}
+
+.now {
+  position: absolute;
+  left: 0;
+  transform: translateX(-100%);
+  transition: all 0.5s ease;
+  z-index: 2;
+  text-shadow: none;
+}
+
+button:hover .now {
+  transform: translateX(10px);
+  transition-delay: 300ms;
+}
+
+button:hover .play {
+  transform: translateX(200%);
+  transition-delay: 300ms;
+}
+
+/* 特殊按钮样式覆盖 */
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info,
+.btn-light,
+.btn-dark,
+.btn-link {
+  background-color: hsl(49deg 98% 60%) !important;
+  border: solid 2px black !important;
+  color: white !important;
+  text-shadow: 2px 2px rgb(116, 116, 116) !important;
+  border-radius: 50px !important;
+  transition: all 0.5s ease !important;
+}
+
+/* 强制跳过按钮样式 */
+button[data-bs-toggle="tooltip"][title="强制跳过"] {
+  text-shadow: none !important;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-danger:hover,
+.btn-warning:hover,
+.btn-info:hover,
+.btn-light:hover,
+.btn-dark:hover,
+.btn-link:hover {
+  transform: scale(1.05) !important;
+  background-color: hsl(49deg 98% 65%) !important;
+}
+
+/* 保持原有的特殊按钮样式 */
+#sendButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 99.5%;
+  max-width: none;
+  min-width: 0;
+  margin: 1rem auto 0 auto;
+  overflow: hidden;
+  height: 2.5rem;
+  cursor: pointer;
+  backdrop-filter: blur(1rem);
+  border-radius: 5rem;
+  transition: background-color 0.8s ease, border-color 0.8s ease, background-image 0.8s ease, box-shadow 0.8s ease, transform 0.5s ease;
+  animation: gradient_301 5s ease infinite;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+
+  /* 默认状态：更透明的统一毛玻璃效果，边框样式与hover时匹配，并增加外部描边 */
+  background-color: rgba(255, 255, 255, 0.15);
+  border: double 4px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+  background-image: none;
+}
+
+#sendButton #container-stars {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: 0.5s;
+  backdrop-filter: blur(1rem);
+  border-radius: 5rem;
+}
+
+#sendButton strong {
+  z-index: 2;
+  font-family: "Avalors Personal Use";
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: #ffffff;
+  text-shadow: 0 0 4px white;
+  transition: transform 0.5s ease;
+}
+
+#sendButton #glow {
+  position: absolute;
+  display: flex;
+  width: 12rem;
+}
+
+#sendButton .circle {
+  width: 100%;
+  height: 30px;
+  filter: blur(2rem);
+  animation: pulse_3011 4s infinite;
+  z-index: -1;
+}
+
+#sendButton .circle:nth-of-type(1) {
+  background: rgba(254, 83, 186, 0.636);
+}
+
+#sendButton .circle:nth-of-type(2) {
+  background: rgba(142, 81, 234, 0.704);
+}
+
+#sendButton:hover #container-stars {
+  z-index: 1;
+  background-color: #212121;
+}
+
+#sendButton:hover {
+  transform: scaleY(1.18);
+  
+  /* 悬停状态：恢复原始的彩色渐变背景和边框，移除外部描边 */
+  background-color: #212121; /* Base color for content, covered by gradient */
+  border: double 4px transparent; /* To allow background to fill border */
+  box-shadow: none; /* 移除外部描边 */
+  background-image: linear-gradient(#212121, #212121),
+                    linear-gradient(
+                      137.48deg,
+                      #ffdb3b 10%,
+                      #fe53bb 45%,
+                      #8f51ea 67%,
+                      #0044ff 87%
+                    );
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  background-size: 300% 300%; /* Ensure gradient animation works */
+}
+
+#sendButton:hover strong {
+  transform: scale(1.1, 0.932);
+}
+
+#sendButton:active {
+  border: double 4px #fe53bb;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  animation: none;
+}
+
+#sendButton:active .circle {
+  background: #fe53bb;
+}
+
+#sendButton #stars {
+  position: relative;
+  background: transparent;
+  width: 200rem;
+  height: 200rem;
+}
+
+#sendButton #stars::after {
+  content: "";
+  position: absolute;
+  top: -10rem;
+  left: -100rem;
+  width: 100%;
+  height: 100%;
+  animation: animStarRotate 90s linear infinite;
+}
+
+#sendButton #stars::after {
+  background-image: radial-gradient(#ffffff 1px, transparent 1%);
+  background-size: 50px 50px;
+}
+
+#sendButton #stars::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 170%;
+  height: 500%;
+  animation: animStar 60s linear infinite;
+}
+
+#sendButton #stars::before {
+  background-image: radial-gradient(#ffffff 1px, transparent 1%);
+  background-size: 50px 50px;
+  opacity: 0.5;
+}
+
+@keyframes animStar {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-135rem);
+  }
+}
+
+@keyframes animStarRotate {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0);
+  }
+}
+
+@keyframes gradient_301 {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse_3011 {
+  0% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* 针对下拉菜单里的所有文字去除阴影 */
+.dropdown-menu, .dropdown-menu * {
+  text-shadow: none !important;
+}
+
+#sendButton.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+#sendButton.loading::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.2em;
+  height: 1.2em;
+  margin-left: -0.6em;
+  margin-top: -0.6em;
+  border: 2.5px solid #fff;
+  border-top: 2.5px solid #a0a0a0;
+  border-radius: 50%;
+  animation: sendbtn-spin 0.7s linear infinite;
+  z-index: 10;
+}
+@keyframes sendbtn-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#sendButton:disabled {
+  opacity: 0.7;
+  filter: grayscale(0.2);
+  pointer-events: none;
+} 
+
+.user-profile {
+  position: fixed;
+  top: 20px;
+  right: 20px; /* 确保组件在右上角 */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 用户名+头像组合 与 登出按钮 之间的间距 */
+  z-index: 1050; /* 确保在其他元素之上 */
+  background-color: rgba(255, 255, 255, 0.1); /* 轻微的背景模糊效果 */
+  backdrop-filter: blur(5px);
+  padding: 8px;
+  border-radius: 50px; /* 使整个容器呈椭圆或胶囊状 */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.user-info-avatar-container {
+    display: flex;
+    align-items: center;
+    /* order: 2; */ /* Removed to rely on HTML source order */
+    gap: 8px; /* Added for spacing between username and avatar */
+}
+
+.user-avatar {
+  width: 40px; /* 固定宽度 */
+  height: 40px; /* 固定高度 */
+  background-color: var(--bs-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  /* margin-left: 10px; */ /* Removed, using gap in parent container now */
+  cursor: default; /* 保持默认光标，因为它是静态显示 */
+}
+
+.user-name {
+  font-size: 0.9rem;
+  color: var(--bs-body-color);
+  font-weight: 500;
+  white-space: nowrap; /* 防止用户名换行 */
+}
+
+/* 登出按钮 specific styles */
+.logout-button .Btn {
+  width: 40px; /* 初始宽度，与头像大小一致 */
+  height: 40px; /* 初始高度，与头像大小一致 */
+  border-radius: 50%; /* 圆形按钮 */
+  background: var(--bs-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  overflow: hidden; /* 隐藏溢出的文本 */
+  transition: width 0.3s ease, border-radius 0.3s ease; /* 平滑过渡效果 */
+  padding: 0; /* 移除内边距，确保图标居中 */
+  box-shadow: 0 0 0 rgba(0,0,0,0); /* 移除默认阴影 */
+}
+
+.logout-button .Btn .sign {
+  display: flex; /* 确保 SVG 居中 */
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease 0.05s; /* 图标的过渡效果 - 新增延迟 */
+}
+
+.logout-button .Btn .sign svg {
+  width: 1em; /* 调整图标大小 */
+  height: 1em;
+  fill: white;
+}
+
+.logout-button .Btn .text {
+  position: absolute;
+  right: 0;
+  transform: translateX(100%); /* 初始将文本移到按钮外部右侧 */
+  opacity: 0;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: white;
+  margin-right: 10px; /* 文本和图标的间距 */
+  white-space: nowrap; /* 防止文本换行 */
+  transition: opacity 0.2s 0.05s ease, transform 0.3s ease; /* 文本的过渡效果 - 移除 transform 延迟 */
+}
+
+.logout-button .Btn:hover {
+  width: 100px; /* 悬停时展开的宽度 */
+  border-radius: 20px; /* 展开时变为圆角矩形 */
+}
+
+.logout-button .Btn:hover .sign {
+  transform: translateX(-22.5px); /* 图标向左移动，为文本腾出空间 (增加移动距离以避免重叠) */
+}
+
+.logout-button .Btn:hover .text {
+  transform: translateX(12.5px); /* 文本滑入按钮内部 */
+  opacity: 1;
+}
+
+/* sh02 发送按钮悬停动画 (从之前移除的样式中提取) */
+#sendButton:hover::before {
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+#sendButton::before {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+/* 用户头像区域的强制跳过开关样式 */
+.user-profile-switch {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .user-profile-switch {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+.user-profile-switch #userProfileSkipCheckbox {
+  display: none;
+}
+
+.user-profile-switch .switch {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background-color: rgb(99, 99, 99);
+  border-radius: 50%;
+  z-index: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgb(126, 126, 126);
+  box-shadow: 0px 0px 3px rgb(2, 2, 2) inset;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .user-profile-switch .switch {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+.user-profile-switch .switch svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .user-profile-switch .switch svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+.user-profile-switch .switch svg path {
+  fill: rgb(48, 48, 48);
+  transition: all 0.3s ease;
+}
+
+.user-profile-switch #userProfileSkipCheckbox:checked + .switch {
+  box-shadow: 0px 0px 1px rgb(151, 243, 255) inset,
+    0px 0px 2px rgb(151, 243, 255) inset, 
+    0px 0px 10px rgb(151, 243, 255) inset,
+    0px 0px 40px rgb(151, 243, 255), 
+    0px 0px 100px rgb(151, 243, 255),
+    0px 0px 5px rgb(151, 243, 255);
+  border: 2px solid rgb(255, 255, 255);
+  background-color: rgb(146, 180, 184);
+}
+
+.user-profile-switch #userProfileSkipCheckbox:checked + .switch svg {
+  filter: drop-shadow(0px 0px 5px rgb(151, 243, 255));
+}
+
+.user-profile-switch #userProfileSkipCheckbox:checked + .switch svg path {
+  fill: rgb(255, 255, 255);
+}
+
+/* 禁用状态样式 */
+.user-profile-switch.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(50%);
+}
+
+.user-profile-switch.disabled .switch {
+  cursor: not-allowed;
+}
+
+/* 偏移搜索按钮样式覆盖 - 去掉文字阴影 */
+#offsetSearchBtn {
+  text-shadow: none !important;
+  box-shadow: none !important;
+}

@@ -1,0 +1,96 @@
+# /amdl/config/config.yaml
+# --- 任务调度配置 ---
+MAX_PARALLEL: 1                  # 最大并行任务数
+MAX_PARALLEL_TASKS: 1            # 专辑内最大并行任务数
+MAX_GLOBAL_GO_PROCESSES: 1       # 全局最大Go进程数
+MAX_RETRIES: 6                   # 每个任务失败后最大重试次数
+RETRY_DELAY: 2                   # 每次重试之间的等待时间(秒)
+SCHEDULER_LONG_POLL_INTERVAL: 30 # 主调度循环长轮询等待时间(秒)
+SCHEDULER_FAST_POLL_INTERVAL: 1  # 收到后端启动信号后的快速轮询等待时间(秒)
+SCHEDULER_SIGNAL_PORT: 51234     # 主调度器监听唤醒信号的UDP端口
+
+# --- Gemini API配置 ---
+gemini:
+  api_key: ""         # Gemini API密钥，请填入您的API密钥
+  model: "gemini-2.5-flash"                                  # 使用的模型版本（支持搜索）
+  api_base_url: ""       # API基础URL
+
+# --- SSE 配置 ---
+sse:
+  max_connections: 50             # 最大同时SSE连接数
+  port: 5001                      # SSE服务器端口
+
+# --- Bark通知配置 ---
+bark_notification:
+  path: "/Apple-Music-Downloader/{info}"  # 通知路径
+  icon: "https://music.apple.com/assets/favicon/favicon-180.png"  # 通知图标
+
+# --- 文件路径配置 ---
+PATHS:
+  task_queue: info/task_queue.json  # 任务队列文件路径
+  errors: info/errors.json          # 错误记录文件路径
+  users: config/users.yaml          # 用户配置文件路径
+  source: config/source.yaml        # 源配置文件路径
+  go_main: go/main.go               # Go主文件路径
+  go_metadata: go/get_metadata.go   # Go元数据文件路径
+  logs: logs.log                    # 日志文件路径
+
+# --- 邮件检查器配置 ---
+email_checker:
+  imap_server: imap.qq.com          # IMAP服务器地址
+  username: 2927761562@qq.com       # 邮箱用户名
+  password: xpjxmkjxrlpsdhcd        # 邮箱密码
+  check_interval_seconds: 30        # 检查间隔(秒)
+  target_subject: amdl              # 目标邮件主题
+  backend_url: http://127.0.0.1:5000/task  # 后端服务地址
+  smtp_server: smtp.qq.com          # SMTP服务器地址
+  smtp_port: 465                    # SMTP端口
+
+logs_manager:
+  max_log_size_mb: 20               # 主日志文件达到多少MB时进行分割，默认100
+  log_retention_days: 5             # 归档日志保留多少天，默认7
+  check_interval_seconds: 3600      # 每隔多少秒检查一次日志，默认3600 (1小时)
+  archive_directory: "logs/archive" # 日志归档目录的相对路径(相对于项目根目录)，如果未配置，则默认为 主日志文件目录/archive
+
+
+# --- 任务处理配置 ---
+max_retries: 3                      # 元数据获取最大重试次数
+retry_delay_seconds: 5              # 重试等待时间(秒)
+
+# --- Apple Music API配置 ---
+apple_music_api_base_url: "https://amp-api.music.apple.com/v1/catalog"  # API基础URL
+storefront_language_map:
+  cn: zh-Hans-CN                     # 中国区语言代码
+token_validity_hours: 120            # Token有效期(小时)
+token_fetch_url: "https://beta.music.apple.com"  # Token获取URL
+token_fetch_js_regex: '/assets/index-legacy-[^/]+\.js'  # JS文件匹配正则
+token_fetch_token_regex: '"(eyJh[^"]*)"'         # Token匹配正则
+user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"  # 用户代理
+token_background_refresh_interval_seconds: 900 # 每15分钟检查一次
+token_background_refresh_threshold_seconds: 3600 # 提前1小时刷新
+
+# --- 搜索缓存配置 ---
+search_cache:
+  enabled: true                     # 是否启用搜索缓存
+  cache_dir: "cache/search"         # 缓存目录
+  cache_lifetime_hours: 24          # 缓存生命周期(小时)
+  clear_on_startup: false           # 启动时是否清除缓存
+  max_cache_size_mb: 100            # 最大缓存大小(MB)
+
+# --- 编译配置 ---
+trigger_compile_on_startup: false  # 是否在启动时触发远程编译
+compile_server_url: "http://192.168.3.42:25001/compile_upload"  # 编译服务器URL
+go_source_dir: "go"               # Go源码目录
+compiled_binary_output_dir: "bin" # 编译输出目录
+compiled_binary_name: "main"      # 编译输出文件名
+compile_timeout_seconds: 300      # 编译超时时间(秒)
+target_goos: "linux"              # 目标操作系统
+target_goarch: "amd64"            # 目标架构
+
+# --- 系统配置 ---
+token_file_path: "info/api_token.json"        # API Token文件路径
+task_queue_file_path: "info/task_queue.json"  # 任务队列文件路径
+users_file_path: "config/users.yaml"          # 用户配置文件路径
+log_file_path: "logs.log"                     # 日志文件路径
+log_level: "INFO"                             # 日志级别
+log_format: "%(asctime)s - %(threadName)s - %(levelname)s - %(message)s"  # 日志格式(统一格式)

@@ -1,0 +1,356 @@
+/* 搜索功能相关样式 */
+
+/* 移动端加载指示器样式 */
+.mobile-loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin: 16px 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 8px;
+}
+
+.loading-text {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 移动端限制提示样式 */
+.mobile-limit-message {
+    display: block;
+    text-align: center;
+    padding: 24px 20px;
+    margin: 16px;
+    background: linear-gradient(135deg, #ff9a56, #ff6b6b);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+    animation: slideInUp 0.3s ease-out;
+}
+
+.limit-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.limit-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.limit-text {
+    font-size: 13px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+/* 移动端结束提示样式 */
+.mobile-end-message {
+    display: block;
+    text-align: center;
+    padding: 20px;
+    margin: 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    animation: slideInUp 0.3s ease-out;
+}
+
+.end-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.end-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.end-text {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 搜索更多按钮样式 */
+.load-more-cta {
+    position: relative;
+    margin: auto;
+    padding: 6px 12px;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 25px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+}
+
+.load-more-cta:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-radius: 25px;
+    background: #b1dae7;
+    width: 34px;
+    height: 34px;
+    transition: all 0.3s ease;
+}
+
+.load-more-cta span {
+    position: relative;
+    font-family: "Ubuntu", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #234567;
+    z-index: 1;
+    text-shadow: none;
+}
+
+.load-more-cta svg {
+    position: relative;
+    top: 0;
+    margin-left: 6px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #234567;
+    stroke-width: 2;
+    transform: translateX(-3px);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.load-more-cta:hover:before {
+    width: 100%;
+    background: #a0d2e8;
+}
+
+.load-more-cta:hover svg {
+    transform: translateX(0);
+}
+
+.load-more-cta:active {
+    transform: scale(0.95);
+}
+
+.load-more-cta.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.load-more-cta.disabled:before {
+    background: #ccc;
+}
+
+.load-more-cta.disabled span {
+    color: #666;
+    text-shadow: none;
+}
+
+.load-more-cta.disabled svg {
+    stroke: #666;
+}
+
+.load-more-cta.disabled:hover:before {
+    width: 34px;
+    background: #ccc;
+}
+
+.load-more-cta.disabled:hover svg {
+    transform: translateX(-3px);
+}
+
+.load-more-cta.disabled:active {
+    transform: none;
+}
+
+/* 缓存开关样式 */
+.cache-toggle-container {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+}
+
+.cache-toggle-container input {
+    display: none;
+}
+
+.cache-toggle-button {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #234567;
+    background-color: transparent;
+    background-image: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cache-toggle-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+}
+
+.cache-toggle-icon svg {
+    height: 100%;
+    width: 100%;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.cache-toggle-container input:checked + .cache-toggle-button {
+    border-color: #b1dae7;
+    background-image: linear-gradient(145deg, #b1dae7, #a0d2e8);
+    animation: cacheToggleBorder 0.3s linear alternate-reverse infinite;
+}
+
+.cache-toggle-container input:checked + .cache-toggle-button .cache-toggle-icon svg {
+    color: #234567;
+    animation: cacheToggleFill 0.3s linear alternate-reverse infinite;
+}
+
+@keyframes cacheToggleFill {
+    to {
+        color: rgba(35, 69, 103, 0.7);
+    }
+}
+
+@keyframes cacheToggleBorder {
+    to {
+        border-color: rgba(177, 218, 231, 0.5);
+    }
+}
+
+/* 桌面端和移动端显示控制 */
+.desktop-only {
+    display: flex !important;
+}
+
+/* 搜索模态框样式 */
+/* 禁用搜索模态框的modal-body滚动 */
+#searchResultsModal .modal-body {
+    overflow: hidden !important;
+    max-height: none !important;
+}
+
+#searchResultsModal .modal-dialog {
+    max-height: 90vh !important;
+    /* 修正居中问题 - 确保左右边距相等 */
+    margin: 1.75rem auto !important;
+    max-width: 900px !important;
+    width: 95% !important;
+}
+
+#searchResultsModal .modal-content {
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 确保模态框在所有屏幕尺寸下都能正确居中 */
+#searchResultsModal.modal {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 767px) {
+    /* 移动端隐藏桌面端专用元素 */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* 移动端只显示的加载指示器和提示消息 */
+    .mobile-loading-indicator {
+        display: flex;
+    }
+    
+    /* 移动端搜索模态框优化 */
+    #searchResultsModal .modal-dialog {
+        margin: 0.5rem !important;
+        width: calc(100% - 1rem) !important;
+        max-width: none !important;
+    }
+    
+    /* 移动端搜索结果滚动 */
+    #searchResults {
+        max-height: 70vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (min-width: 768px) {
+    /* 桌面端隐藏移动端专用元素 */
+    .mobile-loading-indicator,
+    .mobile-limit-message,
+    .mobile-end-message {
+        display: none !important;
+    }
+    
+    /* 桌面端搜索结果高度限制 */
+    #searchResults {
+        height: 630px;
+        overflow-y: auto;
+        /* 隐藏滚动条 */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE和Edge */
+    }
+    
+    /* 隐藏Webkit浏览器的滚动条 */
+    #searchResults::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 为搜索结果网格设置两行限制的替代方案 */
+    .search-grid-container {
+        /* 桌面端每行4个，两行就是8个，但我们使用滚动而不是隐藏 */
+    }
+} 

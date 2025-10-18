@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh_cn" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AMDL Web Interface" />
+    <meta name="author" content="HangyuDong X YangjunweiLiang X Gemini-Pro" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- iOS Native App Experience -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <link rel="manifest" href="manifest.json">
+    <!-- End iOS Native App Experience -->
+
+    <title>AMDL WebUI (MyGO!!!!! ver4.5)</title>
+    <script src="assets/js/color-modes.js"></script> <!-- 保留 -->
+    
+    <!-- 🎯 新增：页面加载时立即检查URL参数，避免元素闪烁 -->
+    <script>
+        (function() {
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasMonitor = urlParams.get('monitor') === 'true';
+            const hasUuid = urlParams.get('uuid');
+            
+            // 如果检测到URL参数，立即添加隐藏样式
+            if (hasMonitor || hasUuid) {
+                console.log('[InitHide] 🎯 检测到URL参数，预置页面元素隐藏样式');
+                
+                // 创建CSS样式来隐藏元素
+                const style = document.createElement('style');
+                style.id = 'initial-hide-style';
+                style.textContent = `
+                    main.form-signin,
+                    #coverPreviewSection,
+                    .gradient-title,
+                    #pendingTasks,
+                    .d-inline-block {
+                        opacity: 0 !important;
+                        visibility: hidden !important;
+                        pointer-events: none !important;
+                        transition: none !important;
+                    }
+                `;
+                
+                // 在head中插入样式
+                document.head.appendChild(style);
+                console.log('[InitHide] ✅ 页面元素预置隐藏样式已应用');
+            }
+        })();
+    </script>
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/dist/css/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- 新增：引入拆分后的 CSS 文件 -->
+    <link href="assets/css/main.css" rel="stylesheet" />
+    <link href="assets/css/button.css" rel="stylesheet" />
+    <link href="assets/css/close-button.css" rel="stylesheet" />
+    <link href="assets/css/search.css" rel="stylesheet" />
+    
+    <!-- 图片搜索相关样式 -->
+    <style>
+        .gemini-gradient-text {
+            background: -webkit-linear-gradient(45deg, #4285F4, #9B59B6, #F4B400, #0F9D58);
+            background: linear-gradient(45deg, #4285F4, #9B59B6, #F4B400, #0F9D58);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .image-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-upload-area:hover,
+        .image-upload-area.dragover {
+            background-color: #f8f9fa;
+            border-color: #0d6efd;
+        }
+        
+        .upload-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            color: #6c757d;
+        }
+        
+        .upload-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .upload-label {
+            color: #0d6efd;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .upload-label:hover {
+            text-decoration: underline;
+        }
+        
+        /* Safari特定优化 */
+        @supports (-webkit-appearance: none) {
+            .upload-label {
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            .image-upload-area {
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* 确保文件输入框在Safari中可以正确触发 */
+            input[type="file"] {
+                -webkit-appearance: none;
+                appearance: none;
+            }
+        }
+        
+        .upload-hint {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+        
+        .image-preview-container {
+            margin-top: 1rem;
+            text-align: center;
+            max-height: 250px;
+            overflow: hidden;
+        }
+        
+        .image-preview {
+            max-height: 200px;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            object-fit: contain;
+            width: auto;
+            height: auto;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 576px) {
+            .image-preview {
+                max-height: 150px;
+            }
+            
+            .image-upload-area {
+                min-height: 150px;
+                padding: 1.5rem;
+            }
+            
+            .upload-icon {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .recognition-results,
+            .auto-search-results {
+                max-height: 200px;
+            }
+        }
+        
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+            color: #0d6efd;
+        }
+        
+        .recognition-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .recognition-results .result-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .recognition-results .result-item.selected {
+            border-color: #0d6efd;
+            background: #e7f3ff;
+        }
+        
+        .auto-search-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .auto-search-results .search-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+        
+        .auto-search-results .search-item:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 2px 8px rgba(13,110,253,0.1);
+        }
+        
+        .auto-search-results .search-item.selected {
+            border-color: #0d6efd;
+            background: #e7f3ff;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* 拖拽到输入框的样式 */
+        .form-control.drag-over {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        
+        /* 新增：通知系统样式 */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            pointer-events: none;
+        }
+        
+        .notification {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: auto;
+            transform: translateX(-120%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .notification-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon.success {
+            color: #28a745;
+        }
+        
+        .notification-icon.error {
+            color: #dc3545;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: #495057;
+        }
+        
+        .notification-message {
+            color: #495057;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .notification-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .notification-time {
+            opacity: 0.8;
+        }
+        
+        .notification-type {
+            background: rgba(0, 123, 255, 0.1);
+            color: #0056b3;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        /* 暗色主题适配 */
+        [data-bs-theme="dark"] .notification {
+            background: rgba(33, 37, 41, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-bs-theme="dark"] .notification-title {
+            color: #f8f9fa;
+        }
+        
+        [data-bs-theme="dark"] .notification-message {
+            color: #dee2e6;
+        }
+        
+        [data-bs-theme="dark"] .notification-close {
+            color: #adb5bd;
+        }
+        
+        [data-bs-theme="dark"] .notification-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8f9fa;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 576px) {
+            .notification-container {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+            
+            .notification {
+                padding: 12px 16px;
+                margin-bottom: 8px;
+            }
+            
+            .notification-title {
+                font-size: 13px;
+            }
+            
+            .notification-message {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <!-- <style> ... </style>  <-- 此处内联样式已被移除 -->
+</head>
+<body class="bg-body-tertiary">
+    <div id="globalBlurBg"></div>
+    
+    <!-- 新增：通知容器 -->
+    <div id="notificationContainer" class="notification-container">
+        <!-- 通知将由JavaScript动态添加到这里 -->
+    </div>
+    
+    <!-- 用户头像组件 -->
+    <div id="userProfile" class="user-profile">
+        <!-- 新增一个容器包裹用户名和头像，用于hover控制 -->
+        <div class="user-info-avatar-wrapper">
+            <div class="user-info">
+                <span id="userName" class="user-name">用户名</span>
+            </div>
+            <div class="user-avatar" id="userAvatar">
+                <span id="avatarText">用</span>
+            </div>
+        </div>
+
+        <!-- 强制跳过开关 -->
+        <div class="user-profile-switch" id="userProfileSwitchContainer">
+            <input id="userProfileSkipCheckbox" type="checkbox" />
+            <label class="switch" for="userProfileSkipCheckbox">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="slider">
+                    <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V256c0 17.7 14.3 32 32 32s32-14.3 32-32V32zM143.5 120.6c13.6-11.3 15.4-31.5 4.1-45.1s-31.5-15.4-45.1-4.1C49.7 115.4 16 181.8 16 256c0 132.5 107.5 240 240 240s240-107.5 240-240c0-74.2-33.8-140.6-86.6-184.6c-13.6-11.3-33.8-9.4-45.1 4.1s-9.4 33.8 4.1 45.1c38.9 32.3 63.5 81 63.5 135.4c0 97.2-78.8 176-176 176s-176-78.8-176-176c0-54.4 24.7-103.1 63.5-135.4z" />
+                </svg>
+            </label>
+        </div>
+
+        <!-- 登出按钮 -->
+        <div class="logout-button">
+            <button class="Btn" onclick="handleLogout()">
+                <div class="sign">
+                    <svg viewBox="0 0 512 512">
+                        <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+                    </svg>
+                </div>
+                <div class="text">退出登录</div>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 省略了主题切换按钮 HTML (如果之前有的话，这里是占位符，实际代码中可能没有) -->
+    <!-- <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle"> ... </div> -->
+
+    <!-- 输入表单区域 -->
+    <main class="form-signin">
+       <h1 class="h3 mb-3 fw-normal">
+          <span class="gradient-title">AMDL WebUI (MyGO!!!!! ver4.5)</span>
+          <div class="d-inline-block">
+            <span id="pendingTasks" class="status-badge">准备就绪</span>
+          </div>
+        </h1>
+      <div class="form-floating">
+        <textarea class="form-control" id="song_links" placeholder="输入 Apple Music 链接或搜索关键词(可用 , ; 换行 分隔多个)" style="height: 45px; max-height: 300px; resize: vertical; overflow-y: auto;" onkeydown="if(event.keyCode === 13 && !event.shiftKey) { event.preventDefault(); handleSubmit(); }"></textarea>
+        <label for="song_links">歌曲链接或搜索关键词，点击发送识别专辑封面</label>
+      </div>
+      <button id="sendButton" class="btn" onclick="handleSubmit()">
+        <strong>发送请求</strong>
+        <div id="container-stars">
+          <div id="stars"></div>
+        </div>
+        <div id="glow">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+      </button>
+    </main>
+
+    <!-- 任务队列封面预览区域 -->
+    <section id="coverPreviewSection">
+      <button id="scrollLeftBtn" class="scroll-btn" aria-label="向左滚动"><i class="bi bi-chevron-left"></i></button>
+      <button id="scrollRightBtn" class="scroll-btn" aria-label="向右滚动"><i class="bi bi-chevron-right"></i></button>
+      <div id="coverScrollContainer">
+          <div id="taskQueueCovers">
+              <!-- 封面将由 JS 动态添加 -->
+          </div>
+      </div>
+    </section>
+
+    <!-- Modals (保持不变) -->
+    <section class="modal fade" id="imageSearchModal" tabindex="-1" aria-labelledby="imageSearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-height: 90vh;">
+            <div class="modal-content" style="max-height: 100%; overflow: hidden;">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 gemini-gradient-text" id="imageSearchModalLabel">专辑封面识别</h1>
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">
+                        <svg class="svg-icon" viewBox="0 0 384 512">
+                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: calc(90vh - 120px); overflow-y: auto;">
+                    <p class="text-muted mb-3">⚠️识别不一定准确，结果仅供参考⚠️</p>
+                    
+                    <!-- 文件上传区域 -->
+                    <div id="imageUploadArea" class="image-upload-area">
+                        <div class="upload-content">
+                            <svg class="upload-icon" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="upload-text">
+                                <label for="imageFileUpload" class="upload-label">
+                                    <span>选择文件</span>
+                                    <input id="imageFileUpload" name="imageFileUpload" type="file" style="position: absolute; left: -9999px; opacity: 0;" accept="image/*">
+                                </label>
+                                <span>或拖拽到此处</span>
+                            </div>
+                            <p class="upload-hint">支持 PNG, JPG, GIF 等图片格式，最大 15MB</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 图片预览 -->
+                    <div id="imagePreviewContainer" class="image-preview-container hidden">
+                        <h6 class="mb-2">图片预览:</h6>
+                        <img id="imagePreview" src="#" alt="图片预览" class="image-preview">
+                    </div>
+                    
+                    <!-- 加载指示器 -->
+                    <div id="imageLoadingIndicator" class="loading-indicator hidden">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="ms-2">正在识别中，请稍候...</span>
+                    </div>
+                    
+                    <!-- 错误信息 -->
+                    <div id="imageErrorMessage" class="alert alert-danger hidden" role="alert">
+                        <span id="imageErrorText"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 识别结果弹窗 -->
+    <section class="modal fade" id="recognitionResultModal" tabindex="-1" aria-labelledby="recognitionResultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" style="max-height: 90vh;">
+            <div class="modal-content" style="max-height: 100%; overflow: hidden;">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="recognitionResultModalLabel">识别结果</h1>
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">
+                        <svg class="svg-icon" viewBox="0 0 384 512">
+                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: calc(90vh - 160px); overflow-y: auto;">
+                    <div class="row g-4">
+                        <!-- 左侧：识别结果 -->
+                        <div class="col-lg-6">
+                            <h6 class="mb-3">识别到的专辑信息:</h6>
+                            <div id="recognitionResults" class="recognition-results">
+                                <!-- 识别结果将在这里显示 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 右侧：搜索结果 -->
+                        <div class="col-lg-6">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">搜索结果:</h6>
+                                <button id="offsetSearchBtn" class="btn btn-sm btn-outline-primary">偏移搜索</button>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="" id="onlyAlbumTitleCheckbox">
+                                <label class="form-check-label" for="onlyAlbumTitleCheckbox">
+                                    仅用专辑名进行搜索
+                                </label>
+                            </div>
+                            <div id="autoSearchResults" class="auto-search-results">
+                                <div class="d-flex justify-content-center">
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-primary" id="appleMusicsBtn">
+                        <i class="bi bi-music-note-beamed"></i> Apple Music
+                    </button>
+                    <button type="button" class="btn btn-primary" id="downloadSelectedBtn">下载选中</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="modal fade" id="succeedModal" tabindex="-1" aria-labelledby="succeedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content"> <div class="modal-header"> <h1 class="modal-title fs-5 text-success fw-bold" id="succeedModalLabel">发送成功</h1> <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">
+            <svg class="svg-icon" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+            </svg>
+        </button> </div> <div class="modal-body"> <div class="text-center text-success fw-bold display-1"><i class="bi bi-check2-circle"></i></div> <br /> <span id="successMessage">你的歌曲链接已发送至AMDL，请稍等片刻等待处理。</span> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary me-auto" id="viewLogsBtn"> <i class="bi bi-terminal me-1"></i> 查看日志 </button> <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="confirmSuccessBtn">好的</button> </div> </div> </div>
+    </section>
+    <section class="modal fade" id="failedModal" tabindex="-1" aria-labelledby="failedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content"> <div class="modal-header"> <h1 class="modal-title fs-5 text-danger fw-bold" id="failedModalLabel">Oooo...出了点问题！</h1> <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">
+            <svg class="svg-icon" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+            </svg>
+        </button> </div> <div class="modal-body"> <div class="text-center text-danger fw-bold display-1"><img src="assets/saki.jpg" width="80%" alt="Error illustration"/></div> <br />遇到了一些问题，客服丰川祥子提醒您：<br /> <span class="text-danger fw-bold" style="padding: 0 10px" id="errorMessage"></span> </div> <div class="modal-footer"> <button type="button" class="btn btn-danger" data-bs-dismiss="modal">理解した！</button> </div> </div> </div>
+    </section>
+    <!-- 日志 Modal -->
+    <section class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h1 class="modal-title fs-5" id="logModalLabel">任务监控</h1>
+               <div id="overallStatusBar" style="flex:1;text-align:center;"></div>
+               <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">
+                   <svg class="svg-icon" viewBox="0 0 384 512">
+                       <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                   </svg>
+               </button>
+             </div>
+             <div class="modal-body">
+               <div class="d-flex justify-content-center align-items-center h-100">
+                 <div class="spinner-border" role="status">
+                   <span class="visually-hidden">Loading...</span>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+    </section>
+    <!-- 搜索结果 Modal -->
+    <section class="modal fade" id="searchResultsModal" tabindex="-1" aria-labelledby="searchResultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="searchResultsModalLabel">搜索结果</h1>
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">
+                        <svg class="svg-icon" viewBox="0 0 384 512">
+                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="searchResults" class="w-full">
+                        <!-- 搜索结果将在这里动态添加 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Modals 结束 -->
+    
+    
+    <!-- SVG Symbols (保持不变) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"> <symbol id="check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></symbol> <symbol id="circle-half" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/></symbol> <symbol id="moon-stars-fill" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162h1.217a.217.217 0 0 1 .164.365l-.98.715.387 1.162a.217.217 0 0 1-.316.247l-.98-.715-.98.715a.217.217 0 0 1-.316-.247l.387-1.162-.98-.715a.217.217 0 0 1 .164-.365h1.217l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774.258c.346-.115.617-.386.732-.732L13.863.1z"/></symbol> <symbol id="sun-fill" viewBox="0 0 16 16"><path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></symbol> <symbol id="chevron-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></symbol> <symbol id="chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></symbol> <symbol id="terminal" viewBox="0 0 16 16"><path d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9zM3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708l-2-2z"/><path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12z"/></symbol> </svg>
+
+    <!-- Bootstrap JS -->
+    <!-- defer 确保在 HTML 解析后执行 -->
+    <script defer src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 移除 SSE 实时进度更新脚本 -->
+    
+
+    <!-- 移除: 内联 JavaScript 逻辑 -->
+
+    <!-- 新增：引入拆分后的 JavaScript 主模块 -->
+    <script type="module" src="assets/js/main.js"></script>
+
+    <!-- 新增：自定义 Tooltip 模板 -->
+    <div id="customTooltip" style="position: absolute; display: none; z-index: 1080; pointer-events: none;"></div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+# /amdl/config/users.yaml
+# 定义用户、他们关联的邮箱地址以及别名。
+
+# 在这里添加更多用户，遵循相同的结构
+# some_user:
+#   other_name: [] # 如果没有别名，可以为空列表
+#   email:
+#     - primary_email@provider.com
+#   enable_email_notification: true  # 是否启用邮件通知
+#   avatar: "https://example.com/avatar.jpg"  # 用户头像链接

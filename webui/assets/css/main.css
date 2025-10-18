@@ -1,0 +1,2555 @@
+/* --- 文件：assets/css/main.css (修改后) --- */
+
+/* 基本布局 */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('https://lyjw131.com:44380/images/mygo!!!!!-folder-54-enhance-1.6x.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center 20%;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* 用户头像组件样式 */
+.user-profile {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: none; /* 初始状态隐藏 */
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 50px; /* 确保足够的圆角 */
+    padding: 8px; /* 统一的padding */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 过渡效果 */
+    cursor: pointer;
+    opacity: 0; /* 初始透明度为0 */
+    transform: translateX(20px); /* 初始位置偏移 */
+    display: flex; /* 使用flex布局内部元素 */
+    /* order: 1; /* 默认顺序 */
+}
+
+/* 包裹用户名和头像的容器 */
+.user-info-avatar-wrapper {
+    display: flex;
+    align-items: center;
+    /* order: 1; /* 默认顺序 */
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .user-profile:hover {
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+        transform: translateX(0) scale(1.02);
+        /* padding-left: 12px; */ /* 移除这里的padding-left，交由 :has() 控制 */
+    }
+
+    /* 新增：当悬停在头像或登出按钮时，显示用户名并调整父容器padding */
+    .user-profile:has(.user-avatar:hover) .user-info,
+    .user-profile:has(.logout-button:hover) .user-info {
+        max-width: 120px; /* 用户名最大宽度 */
+        opacity: 1;
+        margin-right: 8px; /* 用户名和头像之间的间距 */
+    }
+
+    .user-profile:has(.user-avatar:hover),
+    .user-profile:has(.logout-button:hover) {
+        padding-left: 12px; /* hover时增加左padding，为用户名腾出空间 */
+    }
+
+    .user-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-bs-theme="dark"] .user-profile:hover {
+        background: rgba(33, 37, 41, 0.98);
+        /* 如果未来暗色模式的hover也包含transform，也应放在这里 */
+    }
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    overflow: hidden;
+    max-width: 0; /* 默认隐藏用户名 */
+    opacity: 0;
+    transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: 0;
+}
+
+/* 移除: .user-profile:hover .user-info {} */
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    /* color: var(--bs-emphasis-color); */ /* 移除原有颜色，使用渐变替代 */
+    white-space: nowrap;
+    line-height: 1.2;
+    /* 应用炫彩文字效果 */
+    background: linear-gradient(90deg, 
+        #ff6b6b 0%, 
+        #ffe259 25%, 
+        #a8ff78 50%, 
+        #00ffe7 75%, 
+        #00c3ff 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* text-fill-color: transparent; /* -webkit-text-fill-color 的标准属性，但浏览器支持不一，保留-webkit前缀 */
+    /* 为了动画效果，可以考虑添加 background-size 和 animation，如果需要 */
+    /* background-size: 200% auto; */
+    /* animation: gradientAnimation 3s linear infinite; */
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    /* order: 2; /* 确保头像在用户名之后（如果需要反向，则user-info order 2, avatar order 1） */
+}
+
+.user-profile-switch,
+.logout-button {
+    margin-left: -1px; /* 修正：桌面端缩小按钮间距，并添加单位 */
+    flex-shrink: 0; /* 防止按钮被压缩 */
+    display: flex; /* 确保按钮是flex item */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 为开关按钮添加基础样式和过渡效果 */
+.user-profile-switch input[type="checkbox"] + label.switch {
+    background-color: var(--bs-gray-700, #495057); /* 开关按钮的默认背景色 */
+    border-radius: 50%; /* 确保是圆形 */
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 40px; /* 桌面端默认尺寸 */
+    height: 40px; /* 桌面端默认尺寸 */
+    display: flex; /* 新增：确保flex布局 */
+    align-items: center; /* 新增：垂直居中 */
+    justify-content: center; /* 新增：水平居中 */
+}
+
+.user-profile-switch .slider path { /* 直接针对路径设置填充色 */
+    fill: var(--bs-gray-400, #adb5bd); /* SVG图标的默认填充色 */
+    transition: fill 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 仅桌面端：开关按钮的悬停效果 */
+@media (min-width: 769px) {
+    .user-profile-switch input[type="checkbox"] + label.switch:hover {
+        transform: scale(1.1);
+        background-color: var(--bs-gray-600, #5a6268); /* 悬停时背景色变亮 */
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* 添加细微阴影 */
+    }
+
+    .user-profile-switch input[type="checkbox"] + label.switch:hover .slider path {
+        fill: var(--bs-light, #f8f9fa); /* 悬停时图标颜色变亮 */
+    }
+}
+
+.user-profile-switch input[type="checkbox"] {
+    width: 40px; /* 使热区匹配 */
+    height: 40px;
+    opacity: 0; /* 隐藏原始checkbox */
+    position: absolute;
+}
+
+.user-profile-switch .slider svg {
+    width: 20px; /* 根据实际图标大小调整 */
+    height: 20px;
+}
+
+.logout-button .Btn .sign svg {
+    width: 18px; /* 根据实际图标大小调整 */
+    height: 18px;
+}
+
+/* 用户头像下拉菜单样式 */
+.user-profile-dropdown {
+    /* min-width: 140px; */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    z-index: 1001;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform-origin: top right;
+}
+
+.user-profile-dropdown .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 10px 0 10px 10px;
+    color: var(--bs-emphasis-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.user-profile-dropdown .dropdown-item:hover {
+    background: rgba(var(--bs-danger-rgb), 0.1);
+    color: var(--bs-danger);
+}
+
+.user-profile-dropdown .dropdown-item i {
+    min-width: 1.5em;
+    margin-right: 8px;
+    text-align: center;
+}
+
+.user-profile-dropdown .dropdown-item span {
+    flex: 1;
+    text-align: right;
+}
+
+/* 暗模式下的头像样式调整 */
+[data-bs-theme="dark"] .user-profile {
+    background: rgba(33, 37, 41, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* [data-bs-theme="dark"] .user-profile:hover 被移到上面的 @media (hover: hover) and (pointer: fine) 中 */
+
+[data-bs-theme="dark"] .user-name {
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] .user-profile-dropdown {
+    background: rgba(33, 37, 41, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 移动端响应式设计 */
+@media (max-width: 768px) {
+    /* 移动端完全禁用登出按钮的hover效果 */
+    .logout-button .Btn,
+    .logout-button .Btn:hover,
+    .logout-button .Btn:focus,
+    .logout-button .Btn:active {
+        width: 50px !important; /* 从40px放大到50px */
+        height: 50px !important; /* 从40px放大到50px */
+        border-radius: 50% !important;
+        transform: scale(1) !important;
+        background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%) !important;
+        box-shadow: 0 2px 8px rgba(255, 65, 65, 0.2) !important;
+        transition: none !important;
+    }
+    
+    /* 移动端图标容器在所有状态下保持一致 */
+    .logout-button .sign,
+    .logout-button .Btn:hover .sign,
+    .logout-button .Btn:focus .sign,
+    .logout-button .Btn:active .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        transition: none !important;
+    }
+    
+    /* 移动端图标在所有状态下保持一致 */
+    .logout-button .sign svg,
+    .logout-button .Btn:hover .sign svg,
+    .logout-button .Btn:focus .sign svg,
+    .logout-button .Btn:active .sign svg {
+        width: 20px !important; /* 从16px放大到20px */
+        height: 20px !important; /* 从16px放大到20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+        position: static !important;
+        margin: 0 auto !important;
+    }
+    
+    /* 移动端文字在所有状态下完全隐藏 */
+    .logout-button .text,
+    .logout-button .Btn:hover .text,
+    .logout-button .Btn:focus .text,
+    .logout-button .Btn:active .text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+    }
+
+    /* 完全禁用hover时的所有变化 */
+    .logout-button .Btn:hover .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        transition: none !important;
+    }
+
+    .logout-button .Btn:hover .sign svg {
+        width: 20px !important; /* 从16px放大到20px */
+        height: 20px !important; /* 从16px放大到20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+        position: static !important;
+        margin: 0 auto !important;
+    }
+
+    .logout-button .Btn:hover .text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+    }
+
+    .user-profile:hover .user-info {
+        max-width: 0; /* 在移动端，hover时也不显示用户名 */
+        opacity: 0;
+        margin-right: 0;
+    }
+
+    /* 移动端不显示用户名 */
+    .user-info {
+        display: none !important;
+    }
+
+    .user-info-avatar-wrapper {
+        /* order: 0; /* 移动端头像在最左边，但由于user-info隐藏了，这个实际不起作用，但可以保留 */
+        /* margin-right: 0 !important; /* 确保没有多余边距 */
+        display: contents; /* 让wrapper不参与flex布局，其子元素直接成为user-profile的flex item */
+    }
+
+    .user-profile {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 20px !important; /* 调整与底部的距离 */
+        left: 50% !important;
+        transform: translateX(-50%) scale(1) !important; /* 修改：明确添加 scale(1) */
+        padding: 12px !important; /* 从8px放大到12px */
+        gap: 12px !important; /* 从8px放大到12px，按钮之间的间距 */
+        height: auto !important;
+        max-height: none !important;
+        z-index: 1000 !important;
+        width: fit-content !important; /* 新增：确保宽度自适应内容 */
+        transition: none !important; /* 确保基础状态无过渡效果 */
+        animation: none !important; /* 新增：确保基础状态无动画效果 */
+        /* display: flex; /* 已在父级设置 */
+        /* justify-content: center; /* 让flex子项居中排列 */
+    }
+    
+    /* 移动端，所有子按钮（头像，开关，登出）都保持一致的间距和大小 */
+    .user-profile > .user-avatar,
+    .user-profile > .user-profile-switch,
+    .user-profile > .logout-button {
+        margin-left: 0 !important; /* 移除特定按钮的左边距，由gap控制 */
+    }
+    /* 如果.user-profile-switch 和 .logout-button 不是 .user-profile 的直接子元素，需要调整选择器 */
+    /* 例如，如果它们在其他容器内，则需要更具体的选择器 */
+
+    /* .user-profile .user-avatar { */
+        /* margin-left: 0 !important; /* 由gap控制间距 */
+        /* order: 1; /* 确保在移动端头像在最前 */
+    /* } */
+
+    /* .user-profile .user-profile-switch { */
+        /* order: 2; */
+    /* } */
+
+    /* .user-profile .logout-button { */
+        /* order: 3; */
+    /* } */
+
+    /* 移除之前针对移动端用户头像交互的修复 */
+
+    /* 新增：在移动端全面禁用用户头像胶囊块及其内部元素交互时的视觉变化 */
+    .user-profile,
+    .user-profile:hover,
+    .user-profile:active,
+    .user-profile:focus,
+    .user-profile:focus-within {
+        transform: translateX(-50%) scale(1) !important;
+        transition: none !important;
+        animation: none !important; /* 新增 */
+        padding: 12px !important; /* 从8px放大到12px */
+        padding-left: 12px !important; /* 从8px放大到12px */
+    }
+
+    /* 针对亮色模式下的交互状态 */
+    .user-profile:not([data-bs-theme="dark"]):hover,
+    .user-profile:not([data-bs-theme="dark"]):active,
+    .user-profile:not([data-bs-theme="dark"]):focus,
+    .user-profile:not([data-bs-theme="dark"]):focus-within {
+        background: rgba(255, 255, 255, 0.95) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    /* 针对暗色模式下的交互状态 */
+    [data-bs-theme="dark"] .user-profile:hover,
+    [data-bs-theme="dark"] .user-profile:active,
+    [data-bs-theme="dark"] .user-profile:focus,
+    [data-bs-theme="dark"] .user-profile:focus-within {
+        background: rgba(33, 37, 41, 0.95) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05) !important; /* 假设暗色模式也有基础阴影，否则设为 none */
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .user-avatar:hover,
+    .user-avatar:active,
+    .user-avatar:focus {
+        transform: scale(1) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important; /* 与默认状态阴影一致 */
+    }
+
+    /* 新增：移动端用户头像放大 */
+    .user-avatar {
+        width: 50px !important; /* 从40px放大到50px */
+        height: 50px !important; /* 从40px放大到50px */
+        font-size: 1.3rem !important; /* 从1.1rem放大到1.3rem */
+    }
+
+    /* 新增：移动端主题切换开关按钮放大 */
+    .user-profile-switch input[type="checkbox"] {
+        width: 50px !important; /* 从40px放大到50px */
+        height: 50px !important; /* 从40px放大到50px */
+    }
+
+    .user-profile-switch input[type="checkbox"] + label.switch {
+        width: 50px !important; /* 从40px放大到50px */
+        height: 50px !important; /* 从40px放大到50px */
+        border-radius: 50% !important;
+        display: flex !important; /* 确保flex布局 */
+        align-items: center !important; /* 垂直居中 */
+        justify-content: center !important; /* 水平居中 */
+    }
+
+    .user-profile-switch .slider svg {
+        width: 24px !important; /* 从20px放大到24px */
+        height: 24px !important; /* 从20px放大到24px */
+    }
+}
+
+@media (max-width: 480px) {
+    /* 移动端登出按钮样式保持与768px媒体查询一致 */
+    .logout-button .Btn,
+    .logout-button .Btn:hover,
+    .logout-button .Btn:focus,
+    .logout-button .Btn:active {
+        width: 50px !important; /* 保持与768px一致的50px */
+        height: 50px !important; /* 保持与768px一致的50px */
+        border-radius: 50% !important;
+        transform: scale(1) !important;
+        background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%) !important;
+        box-shadow: 0 2px 8px rgba(255, 65, 65, 0.2) !important;
+        transition: none !important;
+    }
+    
+    .logout-button .sign,
+    .logout-button .Btn:hover .sign,
+    .logout-button .Btn:focus .sign,
+    .logout-button .Btn:active .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        transition: none !important;
+    }
+    
+    .logout-button .sign svg,
+    .logout-button .Btn:hover .sign svg,
+    .logout-button .Btn:focus .sign svg,
+    .logout-button .Btn:active .sign svg {
+        width: 20px !important; /* 保持与768px一致的20px */
+        height: 20px !important; /* 保持与768px一致的20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+        position: static !important;
+        margin: 0 auto !important;
+    }
+    
+    .logout-button .text,
+    .logout-button .Btn:hover .text,
+    .logout-button .Btn:focus .text,
+    .logout-button .Btn:active .text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+    }
+
+    /* 完全禁用hover时的所有变化 */
+    .logout-button .Btn:hover .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        transition: none !important;
+    }
+
+    .logout-button .Btn:hover .sign svg {
+        width: 20px !important; /* 保持与768px一致的20px */
+        height: 20px !important; /* 保持与768px一致的20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+        position: static !important;
+        margin: 0 auto !important;
+    }
+
+    .logout-button .Btn:hover .text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+    }
+
+    .user-profile {
+        gap: 10px; /* 从4px放大到10px，在480px及以下保持合理间距 */
+        padding: 10px !important; /* 从6px放大到10px */
+        /* width: fit-content !important; /* 确保也应用于更小屏幕，如果父级已设置，则可省略 */
+    }
+
+    /* 新增：480px以下屏幕的用户头像尺寸 */
+    .user-avatar {
+        width: 50px !important; /* 保持与768px一致的50px */
+        height: 50px !important; /* 保持与768px一致的50px */
+        font-size: 1.3rem !important; /* 保持与768px一致的1.3rem */
+    }
+
+    /* 新增：480px以下屏幕的主题切换开关按钮尺寸 */
+    .user-profile-switch input[type="checkbox"] {
+        width: 50px !important; /* 保持与768px一致的50px */
+        height: 50px !important; /* 保持与768px一致的50px */
+    }
+
+    .user-profile-switch input[type="checkbox"] + label.switch {
+        width: 50px !important; /* 保持与768px一致的50px */
+        height: 50px !important; /* 保持与768px一致的50px */
+        border-radius: 50% !important;
+        display: flex !important; /* 确保flex布局 */
+        align-items: center !important; /* 垂直居中 */
+        justify-content: center !important; /* 水平居中 */
+    }
+
+    .user-profile-switch .slider svg {
+        width: 24px !important; /* 保持与768px一致的24px */
+        height: 24px !important; /* 保持与768px一致的24px */
+    }
+    
+    .logout-button .sign,
+    .logout-button .Btn:hover .sign,
+    .logout-button .Btn:focus .sign,
+    .logout-button .Btn:active .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        transition: none !important;
+    }
+    
+    .logout-button .sign svg,
+    .logout-button .Btn:hover .sign svg,
+    .logout-button .Btn:focus .sign svg,
+    .logout-button .Btn:active .sign svg {
+        width: 20px !important; /* 保持与768px一致的20px */
+        height: 20px !important; /* 保持与768px一致的20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+        position: static !important;
+        margin: 0 auto !important;
+    }
+    
+    .logout-button .text,
+    .logout-button .Btn:hover .text,
+    .logout-button .Btn:focus .text,
+    .logout-button .Btn:active .text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+    }
+    
+    .logout-button .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding-left: 0 !important;
+        transition: none !important;
+    }
+    
+    .logout-button .Btn:hover .sign {
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding-left: 0 !important;
+        transition: none !important;
+    }
+    
+    .logout-button .sign svg {
+        width: 20px !important; /* 保持与768px一致的20px */
+        height: 20px !important; /* 保持与768px一致的20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+    }
+    
+    .logout-button .Btn:hover .sign svg {
+        width: 20px !important; /* 保持与768px一致的20px */
+        height: 20px !important; /* 保持与768px一致的20px */
+        transform: translateX(0) !important;
+        transition: none !important;
+    }
+    
+    .logout-button .text {
+        display: none !important;
+        font-size: 0.75rem;
+    }
+    
+    .logout-button .Btn:hover .text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+    }
+    
+    .user-name {
+        max-width: 60px;
+        font-size: 0.75rem;
+    }
+    
+    .user-profile-dropdown {
+        min-width: 100px;
+    }
+}
+
+/* 全屏模糊遮罩，100%无边缘清晰 */
+#globalBlurBg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    background: none;
+}
+body.modal-blur-active #globalBlurBg {
+    opacity: 1;
+}
+body:not(.modal-blur-active) #globalBlurBg {
+    opacity: 0;
+}
+
+/* 移除 body::after 的所有内容，防止干扰 */
+body::after {
+    content: none !important;
+    background: none !important;
+}
+
+/* 确保 Modal 内容在模糊层之上 */
+.modal {
+    z-index: 1055 !important;
+}
+
+/* 确保主要内容在模糊层之上 */
+main.form-signin,
+#coverPreviewSection {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+}
+
+body > main.form-signin,
+body > #coverPreviewSection {
+    transform: translateY(-7%);
+}
+
+main.form-signin {
+    width: 80%;
+    max-width: 800px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+}
+
+#coverPreviewSection {
+    width: 80%;
+    max-width: 800px;
+    position: relative;
+    padding: 0 35px; /* 为滚动按钮留出空间 */
+    box-sizing: border-box;
+    margin-top: -1rem; /* 向上移动，减少与输入框的间距 */
+    z-index: 1;
+}
+
+/* 暗模式按钮 (样式保留，HTML中可能没有) */
+.bd-mode-toggle {
+    z-index: 1500;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1; /* 初始可见 */
+}
+.bd-mode-toggle.faded-out {
+    opacity: 0;
+    pointer-events: none;
+}
+.bd-mode-toggle #bd-theme { width: 3rem; height: 3rem; padding: 0.75rem; }
+.bd-mode-toggle .bi { width: 1.2em; height: 1.2em; vertical-align: middle; }
+
+
+/* 封面滚动区域 */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background-color: rgba(var(--bs-body-bg-rgb), 0.7);
+    border: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.3);
+    border-radius: 50%;
+    width: 30px; /* 恢复原始尺寸 */
+    height: 30px; /* 恢复原始尺寸 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s, display 0.1s, transform 0.2s;
+    opacity: 0.8;
+    color: var(--bs-emphasis-color);
+    padding: 0; /* 移除内边距，依赖width/height和内部元素对齐 */
+}
+
+.scroll-btn:hover {
+    background-color: rgba(var(--bs-body-bg-rgb), 0.9);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1); /* 悬停时放大一点 */
+}
+
+.scroll-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: translateY(-50%) scale(1); /* 禁用时恢复原始大小 */
+}
+
+/* 确保图标在按钮内居中且可交互 */
+.scroll-btn > i {
+    font-size: 1rem; /* 配合按钮缩小，调整图标大小 */
+    line-height: 1;
+    pointer-events: none;
+}
+
+#scrollLeftBtn { left: 0px; display: none; }
+#scrollRightBtn { right: 0px; display: none; }
+
+#coverScrollContainer {
+    overflow-x: hidden; /* 隐藏滚动条，通过按钮滚动 */
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
+    -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
+    padding-bottom: 10px; /* 底部留白 */
+    box-sizing: border-box;
+    white-space: nowrap; /* 强制内容在一行显示 */
+    font-size: 0; /* 移除 inline-block 之间的间隙 */
+}
+#coverScrollContainer::-webkit-scrollbar { display: none; } /* Webkit 隐藏滚动条 */
+
+#taskQueueCovers {
+    display: block; /* 或者移除 display 设置，依赖于 coverScrollContainer 的 white-space */
+    padding: 5px 0; /* 上下内边距 */
+    min-height: auto; /* 高度由 placeholder 决定 */
+    box-sizing: border-box;
+}
+
+/* --- 新增：封面占位符样式 --- */
+.cover-placeholder {
+    display: inline-block; /* 水平排列 */
+    vertical-align: top; /* 顶部对齐 */
+    width: calc(100% / 6); /* 容器内恰好放下 6 个 */
+    aspect-ratio: 1 / 1; /* 保持正方形 */
+    padding: 5px; /* 在占位符内部创建间隙 */
+    box-sizing: border-box;
+    cursor: pointer; /* 整个占位符可点击 */
+    position: relative; /* 用于内部图片定位 */
+    background: transparent; /* 移除背景色 */
+    border-radius: 8px; /* 圆角 */
+    overflow: hidden; /* 确保内容不超出圆角 */
+}
+
+/* 添加加载动画效果 */
+.cover-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 5px; /* 与padding相同 */
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 8px;
+    animation: shimmer 2s infinite linear;
+}
+
+/* 添加音乐图标 */
+.cover-placeholder::after {
+    content: '🎵';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    opacity: 0.7;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 封面图片样式 (现在位于占位符内) */
+.cover-placeholder img {
+    display: block; /* 块级元素 */
+    width: 100%; /* 填充占位符的内边距区域 */
+    height: 100%; /* 填充占位符的内边距区域 */
+    aspect-ratio: 1 / 1; /* 新增：确保图片自身也维持宽高比 */
+    object-fit: cover; /* 保持比例裁剪 */
+    border-radius: 8px; /* 圆角 */
+    border: 4px solid transparent; /* 默认透明边框，占位用 */
+    transition: border-color 0.3s ease, opacity 0.3s ease; /* 移除 transform 0.2s ease-in-out */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 轻微阴影 */
+    transform-origin: center center; /* 确保缩放中心正确 */
+    position: relative; /* 确保图片在动画上层 */
+    z-index: 2; /* 确保图片在动画和图标上层 */
+    background: transparent; /* 确保图片背景透明 */
+}
+
+/* 图片加载完成后隐藏占位符动画 */
+.cover-placeholder img[src]:not([src=""]) {
+    background: none;
+}
+.cover-placeholder img[src]:not([src=""]) + .placeholder-animation {
+    display: none;
+}
+
+/* --- 新增/替换：根据状态类应用边框颜色和效果 --- */
+.cover-placeholder img.status-running {
+    border-color: #0d6efd; /* 蓝色 */
+}
+.cover-placeholder img.status-ready {
+    border-color: #6c757d; /* 灰色 */
+    opacity: 0.85; /* 等待状态稍微降低透明度 */
+}
+.cover-placeholder img.status-finish {
+    border-color: #198754; /* 绿色 */
+    opacity: 0.7; /* 完成状态降低透明度 */
+}
+.cover-placeholder img.status-error {
+    border-color: #dc3545; /* 红色 */
+    opacity: 0.7; /* 错误状态降低透明度 */
+}
+.cover-placeholder img.status-unknown { /* 未知或初始状态 */
+    border-color: #adb5bd; /* 浅灰色 */
+    opacity: 0.8;
+}
+/* --- 移除旧的状态类样式 --- */
+/* #taskQueueCovers img.waiting-task-cover { border-color: lightblue; } */
+/* #taskQueueCovers img.running-task-cover { border-color: lightgreen; cursor: pointer; } */
+
+/* 封面悬浮效果 (选择器修改) */
+/* .cover-placeholder:hover img { 
+    transform: scale(0.95); 
+} */
+
+/* 错误提示 Modal 图片圆角 */
+#failedModal .modal-body img { border-radius: var(--bs-border-radius-lg); }
+
+/* 输入框样式 */
+#song_links {
+    --glow-color: #7ecbff;
+    --glow-spread-color: #b3e0ff;
+    --glow-star-color: #eaf6ff;
+    border: .12em solid var(--glow-color);
+    background-color: #fff;
+    background-image:
+        radial-gradient(circle at 20% 30%, var(--glow-star-color) 0.7px, transparent 1.2px),
+        radial-gradient(circle at 70% 60%, var(--glow-star-color) 0.8px, transparent 1.3px),
+        radial-gradient(circle at 40% 80%, var(--glow-star-color) 0.5px, transparent 0.9px),
+        linear-gradient(120deg, #b3e0ff11 10%, #7ecbff11 45%, #b3e0ff11 87%);
+    box-shadow:
+        0 0 0.3em .06em var(--glow-color),
+        0 0 0.8em 0.16em var(--glow-spread-color),
+        inset 0 0 .18em .06em var(--glow-color);
+    border-radius: 0.7em;
+    transition: box-shadow 0.3s, border-color 0.3s, background-image 0.3s;
+    position: relative;
+    z-index: 1;
+}
+
+#song_links:focus {
+    outline: none;
+    border-color: #fff;
+    box-shadow:
+        0 0 0.5em .12em var(--glow-color),
+        0 0 1.2em 0.28em var(--glow-spread-color),
+        inset 0 0 .25em .09em var(--glow-color);
+    background-image:
+        radial-gradient(circle at 20% 30%, var(--glow-star-color) 1px, transparent 1.5px),
+        radial-gradient(circle at 70% 60%, var(--glow-star-color) 1.1px, transparent 1.7px),
+        radial-gradient(circle at 40% 80%, var(--glow-star-color) 0.7px, transparent 1.2px),
+        linear-gradient(120deg, #b3e0ff22 10%, #7ecbff22 45%, #b3e0ff22 87%);
+    scrollbar-width: none;         /* Firefox */
+    -ms-overflow-style: none;      /* IE/Edge */
+}
+#song_links:focus::-webkit-scrollbar {
+    display: none;                 /* Chrome/Safari/Opera */
+}
+
+/* Badge 样式 */
+#pendingTasks {
+    border: 2.5px solid #256029;
+    border-radius: 22px;
+    background: #388e3c;
+    color: #fff;
+    font-weight: bold;
+    padding: 4px 18px;
+    font-size: 1.15rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 0 0 2px #fff inset;
+    letter-spacing: 2px;
+    transition: border-color 0.2s;
+}
+
+/* 状态按钮样式 */
+#statusButton {
+    min-width: 6.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 0.35em 1.2em;
+    line-height: 1.2;
+    position: relative;
+    cursor: default;
+    opacity: 0.9;
+}
+
+#statusButton:disabled {
+    opacity: 0.9;
+    cursor: default;
+}
+
+#statusButton .bi-gear {
+    font-size: 1.2em;
+    margin-right: 0.4em;
+    background: rgba(0,0,0,0.08);
+    border-radius: 50%;
+    padding: 0.18em;
+    color: #fff;
+    background-color: #6c757d;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* --- 日志 Modal 样式 (与之前提供的版本一致) --- */
+#logModal .modal-body {
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 任务信息布局 (左侧封面区) */
+#logModal .log-task-active .col-md-4 { min-height: 220px; /* 保持最小高度 */}
+
+#logModal .log-task-active #logModalCover {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px; /* 封面和用户信息的间距 */
+    transition: opacity 0.4s ease-in-out;
+    opacity: 1; /* 确保默认可见 */
+}
+
+#logModal .log-task-active #logModalTitle { display: none; /* 隐藏旧标题位置 */ }
+
+#logModal .log-task-active #logModalUser {
+    min-height: 1.2em;
+    margin-top: 0;
+    font-size: 0.9em;
+    /* color: var(--bs-secondary-color); */
+}
+
+/* 格式化日志/详情显示区域样式 (右侧内容区) */
+#logModal .log-task-active #formattedLogOutput {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-emphasis-color);
+    border-radius: 5px;
+    height: 400px; /* 固定高度 */
+    font-size: 0.9rem;
+    line-height: 1.6;
+    position: relative; /* 用于内部绝对/相对定位 */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 容器本身不滚动 */
+}
+
+/* 固定头部样式 (歌手、专辑、整体状态) */
+#formattedLogOutput .log-header-fixed {
+    flex-shrink: 0; /* 防止收缩 */
+    padding: 10px 10px 0 10px; /* 顶部和左右内边距 */
+    border-bottom: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.15); /* 分隔线 */
+    margin-bottom: 10px; /* 与滚动区的间距 */
+}
+
+#formattedLogOutput .log-header-fixed p {
+    margin-bottom: 0.5rem; /* 段落间距 */
+    white-space: pre-wrap; /* 自动换行 */
+    word-break: break-word; /* 长单词换行 */
+}
+
+/* 整体状态横幅样式 */
+#formattedLogOutput .log-header-fixed .overall-status {
+    padding: 0.5rem 1rem;
+    margin: -10px -10px 10px -10px; /* 贴近边框 */
+    border-radius: 5px 5px 0 0; /* 仅顶部圆角 */
+    text-align: center;
+    font-weight: bold;
+}
+/* --- 新增：为不同整体状态添加颜色 --- */
+#formattedLogOutput .overall-status.success { background-color: rgba(var(--bs-success-rgb), 0.2); color: var(--bs-success-text-emphasis); }
+#formattedLogOutput .overall-status.error   { background-color: rgba(var(--bs-danger-rgb), 0.2); color: var(--bs-danger-text-emphasis); }
+#formattedLogOutput .overall-status.running { background-color: rgba(var(--bs-primary-rgb), 0.15); color: var(--bs-primary-text-emphasis); } /* 蓝色系 */
+#formattedLogOutput .overall-status.ready   { background-color: rgba(var(--bs-secondary-rgb), 0.2); color: var(--bs-secondary-text-emphasis); } /* 灰色系 */
+#formattedLogOutput .overall-status.unknown { background-color: rgba(var(--bs-light-rgb), 0.3); color: var(--bs-body-color); } /* 浅色背景 */
+
+/* 可滚动区域样式 (音轨列表) */
+#formattedLogOutput .log-tracks-scrollable {
+    flex-grow: 1; /* 占据剩余空间 */
+    overflow-y: auto; /* 垂直滚动 */
+    padding: 0 10px 10px 10px; /* 左右和底部内边距 */
+    min-height: 0; /* flexbox overflow fix */
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
+    -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
+}
+#formattedLogOutput .log-tracks-scrollable::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera 隐藏滚动条 */
+}
+
+/* 单个歌曲条目样式 - 基础卡片样式应用到所有状态 */
+#formattedLogOutput .track-entry {
+    margin: 0.5rem 0; /* 统一的上下外边距 */
+    padding: 0.8rem; /* 统一的内边距 */
+    background-color: rgba(var(--bs-emphasis-color-rgb), 0.02); /* 非常淡的默认背景 */
+    border-radius: 0.8rem; /* 统一的圆角 */
+    border: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.05); /* 很淡的边框 */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#formattedLogOutput .track-entry:last-child {
+    margin-bottom: 0;
+}
+
+/* --- 不同音轨状态的背景色变化 --- */
+/* 完成状态 - 绿色背景 */
+#formattedLogOutput .track-entry.track-status-completed { 
+    background-color: rgba(var(--bs-success-rgb), 0.08);
+    border-color: rgba(var(--bs-success-rgb), 0.15);
+}
+
+/* 失败状态 - 红色背景 */
+#formattedLogOutput .track-entry.track-status-failed { 
+    background-color: rgba(var(--bs-danger-rgb), 0.08);
+    border-color: rgba(var(--bs-danger-rgb), 0.15);
+}
+
+/* 已存在状态 - 蓝色背景 */
+#formattedLogOutput .track-entry.track-status-exists { 
+    background-color: rgba(var(--bs-info-rgb), 0.08);
+    border-color: rgba(var(--bs-info-rgb), 0.15);
+}
+
+/* 下载中状态 - 带滑动高光效果 */
+#formattedLogOutput .track-entry.track-status-downloading { 
+    background-color: rgba(var(--bs-primary-rgb), 0.06); /* Original base color */
+    border-color: rgba(var(--bs-primary-rgb), 0.12);    /* Original border color */
+    position: relative; /* For pseudo-element positioning */
+    overflow: hidden;   /* To contain the pseudo-element */
+}
+
+#formattedLogOutput .track-entry.track-status-downloading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.0) 0%,
+        rgba(255, 255, 255, 0.08) 20%,
+        rgba(255, 255, 255, 0.32) 50%,
+        rgba(255, 255, 255, 0.08) 80%,
+        rgba(255, 255, 255, 0.0) 100%
+    );
+    background-size: 400% 100%; /* 更宽的高光滑动区域 */
+    animation: shimmer 2.5s infinite linear;
+}
+
+/* 解密中状态 - 带滑动高光效果 */
+#formattedLogOutput .track-entry.track-status-decrypting { 
+    background-color: rgba(var(--bs-primary-rgb), 0.06); /* Changed to blue base */
+    border-color: rgba(var(--bs-primary-rgb), 0.12);    /* Changed to blue base */
+    position: relative;
+    overflow: hidden;
+}
+
+#formattedLogOutput .track-entry.track-status-decrypting::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.0) 0%,
+        rgba(255, 255, 255, 0.08) 20%,
+        rgba(255, 255, 255, 0.32) 50%,
+        rgba(255, 255, 255, 0.08) 80%,
+        rgba(255, 255, 255, 0.0) 100%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 2.5s infinite linear;
+}
+
+/* 等待状态 - 保持默认样式 */
+#formattedLogOutput .track-entry.track-status-waiting { 
+    background-color: rgba(var(--bs-secondary-rgb), 0.04);
+    border-color: rgba(var(--bs-secondary-rgb), 0.08);
+}
+
+#formattedLogOutput p {
+    margin-bottom: 0.3rem; /* 段落间距缩小 */
+    white-space: pre-wrap; /* 允许自动换行 */
+    word-break: break-word; /* 长单词换行 */
+}
+
+/* 状态图标 */
+#formattedLogOutput .status-icon {
+     display: inline-block;
+     width: 1.5em; /* 固定宽度 */
+     text-align: center; /* 图标居中 */
+}
+
+/* 无任务提示布局 */
+#logModal .log-no-task {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+/* --- 日志 Modal 移动端样式调整 (与之前版本一致) --- */
+@media (max-width: 767.98px) {
+    #logModal .modal-body { overflow-x: hidden; }
+    #logModal .log-task-active .col-md-4 { margin-bottom: 1rem; } /* 移动端时，图片下方增加间距 */
+    #logModal .log-task-active #formattedLogOutput {
+        height: auto; /* 高度自适应 */
+        max-height: 300px; /* 但限制最大高度 */
+        overflow-y: auto; /* 允许滚动 */
+        -webkit-overflow-scrolling: touch; /* iOS 优化滚动 */
+    }
+    /* 移动端不再使用 gap */
+    /* #taskQueueCovers { } 
+    /* 移动端占位符和图片大小调整 (一行显示 3 个) */
+    .cover-placeholder {
+        /* width: calc(100% / 3); /* 旧宽度 */
+        width: calc((100% - 12px) / 3); /* 新宽度，减去左右 margin 的总和 */
+        padding: 0; /* 保持内边距为 0 */
+        margin: 0 2px; /* 添加左右外边距以创建间距 */
+        /* border: 1px dashed red; /* 临时：添加边框以便调试 */
+    }
+    .cover-placeholder img {
+        border-width: 3px; /* 保持移动端边框宽度 */
+        border-radius: 6px; /* 保持调整后的圆角 */
+        display: block; /* 确保图片是块级元素消除下方空隙 */
+        /* vertical-align: top; /* 确保顶部对齐 */
+    }
+    .cover-placeholder::before {
+        top: 0; /* 匹配新的内边距 (0) */
+        left: 0; /* 匹配新的内边距 (0) */
+        right: 0; /* 匹配新的内边距 (0) */
+        bottom: 0; /* 匹配新的内边距 (0) */
+        border-radius: 6px; /* 匹配图片圆角 */
+    }
+    .cover-placeholder::after {
+        /* 图标大小和位置可能需要微调，但暂时保持 */
+        font-size: 18px;
+    }
+    /* 确保主要内容区域也能滚动 */
+    #song_links { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* 新增：调整标题容器 h1 的样式 */
+    main.form-signin > h1 { /* 假设标题和相关元素在h1内 */
+        display: flex;
+        flex-direction: column; /* 子元素垂直排列 */
+        align-items: center;    /* 子元素水平居中 */
+        gap: 0.75rem;           /* 子元素之间的间距 */
+        width: 100%;            /* h1 占据 main.form-signin 的全部内容宽度 */
+        margin-bottom: 1rem;    /* h1 下方的外边距 */
+    }
+
+    /* 新增/修改：调整 .gradient-title 样式 */
+    .gradient-title {
+        width: 100%;            /* 标题宽度撑满其父容器 h1 */
+        /* text-align: center; */    /* 移除：由 justify-content: center 处理 */
+        display: flex;         /* 修改：使用 flex 布局进行精确对齐 */
+        align-items: center;    /* 新增：flex 垂直居中 */
+        justify-content: center;/* 新增：flex 水平居中 */
+        height: auto;           /* 高度自动 */
+        line-height: 1.3;       /* 保留：调整行高以便阅读 */
+        margin: 0;              /* 移除固有外边距，由父容器 gap 控制 */
+        order: -1;              /* 确保标题在最上方显示 */
+        font-size: 1.3rem;      /* 调整移动端标题字体大小 */
+        transform: translateY(2px); /* 新增：微调垂直位置 */
+    }
+
+    /* 新增：移动端隐藏左右滚动按钮 */
+    #scrollLeftBtn,
+    #scrollRightBtn {
+        display: none !important;
+    }
+}
+
+
+/* --- 响应式布局调整 (与之前版本一致) --- */
+@media (max-width: 767.98px) {
+    html, body { 
+        overflow: hidden;
+        height: 100vh;
+        width: 100%;
+    }
+    
+    body { 
+        padding-top: 12rem;
+        padding-bottom: 2rem; 
+        justify-content: flex-start;
+        background-image: url('https://lyjw131.com:44380/images/MACHU.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center 20%;
+        background-attachment: fixed;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    
+    main.form-signin { 
+        width: 90%; 
+        padding: 1rem; 
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    #coverPreviewSection { 
+        width: 90%; 
+        padding: 0 30px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    #song_links { 
+        overflow-y: auto; 
+        -webkit-overflow-scrolling: touch;
+        max-height: 150px;
+    }
+}
+@media (min-width: 768px) {
+    /* 桌面端恢复或设置样式 */
+    body { 
+        justify-content: center; 
+        padding-top: 0; 
+        padding-bottom: 4rem; 
+        background-position: center 7%; /* 保持与移动端一致 */
+    }
+    body::after {
+        background-position: center 7%; /* 保持与 body 一致 */
+    }
+    /* 桌面端占位符和图片大小 (已在上面定义为一行 6 个) */
+    .cover-placeholder {
+        width: calc(100% / 6);
+        padding: 5px;
+    }
+     .cover-placeholder img {
+        border-width: 4px;
+        border-radius: 8px;
+    }
+}
+
+/* --- 其他 Bootstrap 相关和 SVG (与之前版本一致) --- */
+.bd-placeholder-img { font-size: 1.125rem; text-anchor: middle; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+@media (min-width: 768px) { .bd-placeholder-img-lg { font-size: 3.5rem; } }
+.bi { vertical-align: -0.125em; fill: currentColor; }
+.btn-bd-primary { --bd-violet-bg: #712cf9; --bd-violet-rgb: 112.520718, 44.062154, 249.437846; --bs-btn-font-weight: 600; --bs-btn-color: var(--bs-white); --bs-btn-bg: var(--bd-violet-bg); --bs-btn-border-color: var(--bd-violet-bg); --bs-btn-hover-color: var(--bs-white); --bs-btn-hover-bg: #6528e0; --bs-btn-hover-border-color: #6528e0; --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb); --bs-btn-active-color: var(--bs-btn-hover-color); --bs-btn-active-bg: #5a23c8; --bs-btn-active-border-color: #5a23c8; }
+.bd-mode-toggle .dropdown-menu .active .bi { display: block !important; }
+
+/* --- 新增：自定义 Tooltip 样式 --- */
+#customTooltip {
+    background-color: rgba(var(--bs-emphasis-color-rgb), 0.9); /* 使用强调色的深色背景 */
+    color: var(--bs-body-bg); /* 使用浅色文字 */
+    padding: 0.5rem 0.75rem; /* 内边距 */
+    border-radius: var(--bs-border-radius); /* 使用 Bootstrap 的圆角变量 */
+    font-size: 0.875rem; /* 稍小字体 */
+    line-height: 1.4; /* 行高 */
+    max-width: 250px; /* 最大宽度，防止过长 */
+    white-space: pre-wrap; /* 保留换行符 */
+    box-shadow: var(--bs-box-shadow-sm); /* 轻微阴影 */
+    opacity: 0; /* 初始透明，用于过渡 */
+    transition: opacity 0.15s ease-in-out; /* 淡入淡出效果 */
+}
+
+#customTooltip.show {
+    opacity: 1; /* 显示时设置为不透明 */
+}
+
+.mv-mode #logModalUser {
+    display: none !important;
+}
+
+#logModal .modal-header {
+    border-top-left-radius: 2rem !important;
+    border-top-right-radius: 2rem !important;
+    border-bottom: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.1) !important;
+    padding-top: 0.75rem !important; /* 确保上下padding一致 */
+    padding-bottom: 0.75rem !important; /* 确保上下padding一致 */
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    display: flex !important; /* 强制flex布局 */
+    align-items: center !important; /* 强制垂直居中 */
+    justify-content: space-between !important; /* 两端对齐 */
+}
+
+/* 针对模态框标题，如果存在且为直接子元素 */
+#logModal .modal-header .modal-title {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1; /* 尝试重置行高，避免影响对齐 */
+}
+
+/* 针对关闭按钮，如果存在且为直接子元素 */
+#logModal .modal-header .btn-close {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0.5rem !important; /* 调整内边距以控制视觉大小和对齐 */
+    /* align-self: center; 已被父级 align-items: center 控制 */
+}
+
+/* 中间的状态栏容器也应被父级 align-items: center 控制 */
+#logModal .modal-header #overallStatusBar {
+    flex-grow: 1; /* 允许中间状态区域占据可用空间 */
+    display: flex;
+    justify-content: center; /* 状态内容本身在其中间区域居中 */
+    align-items: center;
+    min-height: 2.2em;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0.5rem; 
+    margin-right: 0.5rem; 
+}
+
+#logModal .modal-header #overallStatusBar .overall-status {
+    display: inline-flex; /* 使其内部元素（如图标和文本）可以flex对齐 */
+    align-items: center; /* 垂直居中内部元素 */
+    padding: 0.3em 1.2em;
+    border-radius: 999px; /* 胶囊形状 */
+    font-size: 1em; /* 根据实际情况调整 */
+    font-weight: bold;
+    margin: 0; /* 移除默认外边距 */
+    /* 根据截图，这个元素背景色是浅绿色，文字是深绿色 */
+    /* background-color: #d1e7dd; /* 示例浅绿色 */
+    /* color: #0f5132; /* 示例深绿色 */
+}
+
+/* 如果关闭按钮是标准的 Bootstrap .btn-close，它通常能自行对齐 */
+/* 如果左侧小圆点是单独的元素，它也应该能被 .modal-header 的 align-items: center 影响 */
+
+/* 状态显示块样式 */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+
+/* 下拉菜单按钮样式 */
+.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    line-height: 1;
+    vertical-align: baseline;
+    border-radius: 0.375rem;
+}
+
+/* 标题右侧元素容器 */
+.d-inline-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 状态显示块和下拉菜单按钮的统一样式 */
+.status-badge,
+.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 0.75em;
+    font-size: 0.75em;
+    font-weight: 500;
+    line-height: 32px;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 999px; /* 大曲率胶囊型 */
+    transition: all 0.3s ease;
+    background-color: var(--bs-secondary);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    min-width: fit-content;
+}
+
+/* 成功状态 */
+.status-badge.bg-success {
+    background-color: var(--bs-success) !important;
+    color: white !important;
+}
+
+/* 信息状态 */
+.status-badge.bg-info {
+    background-color: var(--bs-info) !important;
+    color: white !important;
+}
+
+/* 警告状态（需要登录） */
+.status-badge.bg-warning {
+    background-color: var(--bs-warning) !important;
+    color: var(--bs-dark) !important;
+}
+
+/* 需要登录状态的可点击样式 */
+.status-badge.bg-warning[style*="cursor: pointer"] {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%) !important;
+    box-shadow: 
+        0 2px 8px rgba(255, 193, 7, 0.2),
+        0 0 0 0 rgba(255, 193, 7, 0.4);
+    transform: translateY(0);
+}
+
+/* 添加内部光效 */
+.status-badge.bg-warning[style*="cursor: pointer"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        transparent 100%);
+    transition: left 0.6s ease;
+    z-index: 1;
+}
+
+/* 确保文字在光效之上 */
+.status-badge.bg-warning[style*="cursor: pointer"] {
+    position: relative;
+    z-index: 2;
+}
+
+.status-badge.bg-warning[style*="cursor: pointer"]:hover {
+    background: linear-gradient(135deg, #ffcd3c 0%, #ffa000 100%) !important;
+    transform: scale(0.95);
+    box-shadow: 
+        0 8px 25px rgba(255, 193, 7, 0.4),
+        0 0 0 4px rgba(255, 193, 7, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: pulse-glow 2s infinite;
+}
+
+/* 光效扫过动画 */
+.status-badge.bg-warning[style*="cursor: pointer"]:hover::before {
+    left: 100%;
+}
+
+.status-badge.bg-warning[style*="cursor: pointer"]:active {
+    transform: scale(0.92);
+    box-shadow: 
+        0 4px 15px rgba(255, 193, 7, 0.3),
+        0 0 0 2px rgba(255, 193, 7, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffb300 0%, #f57c00 100%) !important;
+    transition: all 0.1s ease;
+}
+
+/* 脉冲发光动画 */
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 
+            0 8px 25px rgba(255, 193, 7, 0.4),
+            0 0 0 4px rgba(255, 193, 7, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 8px 30px rgba(255, 193, 7, 0.6),
+            0 0 0 6px rgba(255, 193, 7, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 模态窗口胶囊样式 */
+.modal-content {
+    border-radius: 2rem !important; /* 大曲率圆角 */
+    border: none !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+}
+
+.modal-header {
+    border-top-left-radius: 2rem !important;
+    border-top-right-radius: 2rem !important;
+    border-bottom: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.1) !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.modal-footer {
+    border-bottom-left-radius: 2rem !important;
+    border-bottom-right-radius: 2rem !important;
+    border-top: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.1) !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.modal-body {
+    padding: 1.5rem !important;
+}
+
+/* 优化模态框内图片填充，减少左右空白 */
+.modal-body img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: 1.2rem;
+    box-shadow: none;
+}
+
+/* 彻底去除浮动输入框 label 及其伪元素的白色背景 */
+.form-floating > label,
+.form-floating > label::after {
+    background-color: transparent !important;
+}
+
+/* 星星开关样式 */
+.toggle-cont {
+  --primary: #54a8fc;
+  --light: #d9d9d9;
+  --dark: #121212;
+  --gray: #414344;
+
+  position: relative;
+  z-index: 10;
+
+  width: fit-content;
+  height: calc(var(--width) + 0.3rem); /* 根据圆形滑块尺寸调整容器高度 */
+
+  border-radius: 9999px;
+}
+
+.toggle-cont .toggle-input {
+  display: none;
+}
+
+.toggle-cont .toggle-label {
+  --gap: 4px;
+  --width: 20px; /* 减小宽度 */
+
+  cursor: pointer;
+
+  position: relative;
+  display: inline-block;
+
+  padding: 0.15rem; /* 减小内边距 */
+  width: calc((var(--width) + var(--gap)) * 2);
+  height: 100%;
+  background-color: var(--dark);
+
+  border: 1px solid #777777;
+
+  border-radius: 9999px;
+  box-sizing: content-box;
+  transition: all 0.3s ease-in-out;
+}
+.toggle-label::before {
+  content: "";
+
+  position: absolute;
+  z-index: -10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: calc(100% + 0.5rem); /* 减小外围光晕 */
+  height: calc(100% + 0.5rem);
+  background-color: var(--gray);
+
+  border: 1px solid #777777;
+  border-bottom: 0;
+  border-radius: 9999px;
+
+  transition: all 0.3s ease-in-out;
+}
+.toggle-label::after {
+  content: "";
+
+  position: absolute;
+  z-index: -10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    circle at 50% -100%,
+    rgb(58, 155, 252) 0%,
+    rgba(12, 12, 12, 1) 80%
+  );
+
+  border-radius: 9999px;
+}
+
+.toggle-cont .toggle-label .cont-icon {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  width: var(--width);
+  height: var(--width); /* 改为与宽度相等，形成真圆形 */
+  background-image: radial-gradient(
+    circle at 50% 0%,
+    #666666 0%,
+    var(--gray) 100%
+  );
+
+  border: 1px solid #aaaaaa;
+  border-bottom: 0;
+  border-radius: 9999px;
+  box-shadow: inset 0 -0.08rem 0.08rem var(--primary),
+    inset 0 0 0.3rem 0.4rem var(--dark);
+
+  transition: transform 0.3s ease-in-out;
+}
+
+.cont-icon {
+  overflow: clip;
+  position: relative;
+}
+
+.cont-icon .sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  display: block;
+
+  width: 1.5px; /* 从 2px 调小到 1.5px */
+  aspect-ratio: 1;
+  background-color: var(--light);
+
+  border-radius: 50%;
+  transform-origin: 50% 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sparkle-1 { rotate: 25deg; animation: sparkle 11s linear infinite; }
+.sparkle-2 { rotate: 100deg; animation: sparkle 18s linear infinite; }
+.sparkle-3 { rotate: 280deg; animation: sparkle 5s linear infinite; }
+.sparkle-4 { rotate: 200deg; animation: sparkle 3s linear infinite; }
+.sparkle-5 { rotate: 30deg; animation: sparkle 20s linear infinite; }
+.sparkle-6 { rotate: 300deg; animation: sparkle 9s linear infinite; }
+.sparkle-7 { rotate: 250deg; animation: sparkle 4s linear infinite; }
+.sparkle-8 { rotate: 210deg; animation: sparkle 8s linear infinite; }
+.sparkle-9 { rotate: 100deg; animation: sparkle 9s linear infinite; }
+.sparkle-10 { rotate: 15deg; animation: sparkle 13s linear infinite; }
+
+@keyframes sparkle {
+  to {
+    width: 1px;
+    transform: translate(2000%, -50%);
+  }
+}
+
+.cont-icon .icon {
+  width: 0.7rem; /* 减小图标尺寸 */
+  height: 0.88rem;
+  fill: var(--light);
+}
+
+/* 选中状态 */
+.toggle-cont .toggle-input:checked + .toggle-label {
+  background-color: #41434400;
+  border: 1px solid #3d6970;
+  border-bottom: 0;
+}
+
+.toggle-cont .toggle-input:checked + .toggle-label::before {
+  box-shadow: 0 1rem 2.5rem -2rem #0080ff;
+}
+
+.toggle-cont .toggle-input:checked + .toggle-label .cont-icon {
+  overflow: visible;
+  background-image: radial-gradient(
+    circle at 50% 0%,
+    #045ab1 0%,
+    var(--primary) 100%
+  );
+  border: 1px solid var(--primary);
+  border-bottom: 0;
+  transform: translateX(calc((var(--gap) * 2) + 100%)) rotate(-225deg);
+}
+
+.toggle-cont .toggle-input:checked + .toggle-label .cont-icon .sparkle {
+  z-index: -10;
+  width: 2px; /* 从 3px 调小到 2px */
+  background-color: #acacac;
+}
+
+@keyframes sparkle-active {
+  to {
+    width: 1.5px; /* 从 2px 调小到 1.5px */
+    transform: translate(5000%, -50%);
+  }
+}
+
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-1 { animation: sparkle-active 11s linear 0.2s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-2 { animation: sparkle-active 18s linear 0.4s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-3 { animation: sparkle-active 5s linear 0.6s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-4 { animation: sparkle-active 3s linear 0.8s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-5 { animation: sparkle-active 20s linear 1s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-6 { animation: sparkle-active 9s linear 1.2s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-7 { animation: sparkle-active 4s linear 1.4s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-8 { animation: sparkle-active 8s linear 1.6s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-9 { animation: sparkle-active 9s linear 1.8s infinite; }
+.toggle-cont .toggle-input:checked + .toggle-label .sparkle-10 { animation: sparkle-active 13s linear 2s infinite; }
+
+.gradient-title {
+  background: linear-gradient(90deg, 
+    #ff6b6b 0%,     /* 鲜艳珊瑚红（暖色） */
+    #ffe259 25%,    /* 鲜亮橙黄（暖色） */
+    #a8ff78 50%,    /* 鲜亮薄荷绿（过渡） */
+    #00ffe7 75%,    /* 鲜艳青绿（冷色） */
+    #00c3ff 100%    /* 更亮的天蓝（冷色） */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+  text-shadow:
+    0 0 8px rgba(0,0,0,0.10),
+    -1px 0 3px rgba(255,255,255,0.28),
+     2px 0 8px rgba(255,255,255,0.55),
+     0 2px 12px rgba(0,0,0,0.22),
+     0 1px 2px rgba(0,0,0,0.12);
+  position: relative;
+  z-index: 1;
+  display: inline-flex;  /* 使用 inline-flex 布局 */
+  align-items: center;   /* 垂直居中对齐 */
+  height: 32px;         /* 与状态标签高度一致 */
+  margin: 0;            /* 移除默认外边距 */
+  line-height: 1;       /* 重置行高 */
+}
+
+/* URL参数自动打开Modal的中心放大动画样式 */
+.modal-scale-animation {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.modal-scale-animation .modal-dialog {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform-origin: center center;
+    transform: translateZ(0); /* 强制硬件加速 */
+}
+
+/* 放大动画关键帧 */
+@keyframes modalScaleIn {
+    0% {
+        transform: scale(0.5) translateZ(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateZ(0);
+        opacity: 1;
+    }
+}
+
+/* 应用放大动画 */
+.modal-scale-animation.animate-in .modal-dialog {
+    animation: modalScaleIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 防止图片加载导致的高度跳跃 */
+.modal-fixed-height .modal-dialog {
+    min-height: 500px;
+    transition: min-height 0.3s ease;
+}
+
+/* 🎯 新增：URL参数打开时的沉浸式页面元素隐藏效果 */
+[data-hidden-for-modal="true"] {
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* 确保隐藏的元素不占用布局空间 */
+main.form-signin[data-hidden-for-modal="true"],
+#coverPreviewSection[data-hidden-for-modal="true"] {
+    visibility: hidden !important;
+}
+
+/* 页面元素恢复显示的动画 */
+[data-hidden-for-modal="false"] {
+    animation: fadeInElements 0.4s ease-out forwards;
+}
+
+/* 页面元素淡入动画 */
+@keyframes fadeInElements {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 优化放大动画的性能和效果 */
+@media (prefers-reduced-motion: no-preference) {
+    .modal-scale-animation .modal-dialog {
+        animation-fill-mode: both;
+    }
+    
+    /* 确保Modal在动画期间保持居中 */
+    .modal-scale-animation.show .modal-dialog {
+        transform-origin: center center;
+    }
+}
+
+/* 为减少动画的用户提供快速显示 */
+@media (prefers-reduced-motion: reduce) {
+    .modal-scale-animation,
+    .modal-scale-animation .modal-dialog {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+    
+    .modal-scale-animation.animate-in .modal-dialog {
+        animation: none !important;
+        transform: scale(1) !important;
+        opacity: 1 !important;
+    }
+}
+
+/* 头像查看器样式 */
+.avatar-viewer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-viewer-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: avatarViewerZoomIn 0.3s ease-out;
+}
+
+.avatar-viewer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px 24px;
+    border-bottom: 1px solid rgba(var(--bs-emphasis-color-rgb), 0.1);
+    flex-shrink: 0;
+}
+
+.avatar-viewer-username {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+}
+
+.avatar-viewer-close {
+    background: none;
+    border: none;
+    color: var(--bs-secondary-color);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.avatar-viewer-close:hover {
+    background: rgba(var(--bs-emphasis-color-rgb), 0.1);
+    color: var(--bs-emphasis-color);
+}
+
+.avatar-viewer-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+}
+
+.avatar-viewer-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.avatar-viewer-image {
+    max-width: calc(100% - 20px);
+    max-height: calc(100% - 20px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.avatar-viewer-letter {
+    width: calc(60% - 20px);
+    height: calc(60% - 20px);
+    max-width: 280px;
+    max-height: 280px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    margin: 10px;
+}
+
+/* 暗模式支持 */
+[data-bs-theme="dark"] .avatar-viewer-content {
+    background: rgba(33, 37, 41, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-bs-theme="dark"] .avatar-viewer-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 动画效果 */
+@keyframes avatarViewerZoomIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 移动端响应式 */
+@media (max-width: 768px) {
+    .avatar-viewer-overlay {
+        padding: 10px;
+    }
+    
+    .avatar-viewer-content {
+        max-width: 100%;
+        border-radius: 16px;
+        max-height: 95vh;
+    }
+    
+    .avatar-viewer-header {
+        padding: 16px 20px 12px 20px;
+    }
+    
+    .avatar-viewer-username {
+        font-size: 1.1rem;
+        max-width: 250px;
+    }
+    
+    .avatar-viewer-letter {
+        width: 50%;
+        height: 50%;
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .avatar-viewer-content {
+        border-radius: 12px;
+    }
+    
+    .avatar-viewer-header {
+        padding: 12px 16px 8px 16px;
+    }
+    
+    .avatar-viewer-username {
+        font-size: 1rem;
+        max-width: 200px;
+    }
+    
+    .avatar-viewer-letter {
+        width: 40%;
+        height: 40%;
+        font-size: 2.5rem;
+    }
+}
+
+/* 登出按钮样式 */
+.logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-button .Btn {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 改为居中对齐，防止图标偏移 */
+    width: 40px; /* 与其他按钮保持一致 */
+    height: 40px; /* 与其他按钮保持一致 */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 更流畅的缓动函数和更长的时间 */
+    box-shadow: 0 2px 8px rgba(255, 65, 65, 0.2);
+    background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+    transform: scale(1); /* 移除默认缩放 */
+}
+
+.logout-button .Btn:hover {
+    width: 100px;
+    border-radius: 20px;
+    transform: scale(1); /* 桌面端hover时不再进一步放大 */
+    box-shadow: 0 4px 15px rgba(255, 65, 65, 0.3);
+    background: linear-gradient(135deg, #ff3742 0%, #ff2f3a 100%);
+}
+
+.logout-button .Btn:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* 登出按钮图标 */
+.logout-button .sign {
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 与按钮保持一致的缓动 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute; /* 使用绝对定位确保居中 */
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.logout-button .sign svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 更流畅的图标动画 */
+}
+
+.logout-button .Btn:hover .sign {
+    width: 22%;
+    padding-left: 0;
+    position: absolute;
+    left: 0;
+    justify-content: flex-start;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.logout-button .Btn:hover .sign svg {
+    transform: translateX(0);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 登出按钮文字 - 基础状态 */
+.logout-button .text {
+    box-sizing: border-box; /* 确保宽度计算准确 */
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: calc(100% - 8px); /* 基础宽度即为hover时的宽度，由父按钮overflow:hidden裁切 */
+    padding-right: 10px;    /* 基础内边距 */
+    opacity: 0;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    /* transform先动，opacity稍后开始变化 */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+    white-space: nowrap;
+    /* overflow: hidden; /* 文字自身也 overflow hidden - 暂时移除，看是否影响 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(100%); /* 初始时完全移出到按钮右侧 */
+}
+
+.logout-button .Btn:hover .text {
+    opacity: 1;
+    transform: translateX(0); /* hover时滑入按钮内 */
+    /* width 和 padding-right 从基础样式继承，之前用户修改的width: calc(100% - 8px); 已移至基础样式 */
+  }
+
+/* 暗模式下的登出按钮样式 */
+[data-bs-theme="dark"] .logout-button .Btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+
+[data-bs-theme="dark"] .logout-button .Btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+/* 新增：日志弹窗打开时预设高度，防止跳动 */
+.log-modal-prepare-height .modal-dialog {
+    min-height: 570px; /* 桌面端估算值 */
+}
+
+@media (max-width: 767.98px) {
+    .log-modal-prepare-height .modal-dialog {
+        min-height: 470px; /* 移动端估算值 */
+    }
+}
+
+/* 桌面端hover动画样式仅限于大屏 */
+@media (min-width: 769px) {
+  .logout-button .Btn:hover {
+    width: 90px; 
+    border-radius: 20px;
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 65, 65, 0.3);
+    background: linear-gradient(135deg, #ff3742 0%, #ff2f3a 100%);
+  }
+
+  .logout-button .Btn:hover .sign {
+    width: 30px; 
+    padding-left: 6px; 
+    position: absolute;
+    left: 0;
+    justify-content: flex-start;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .logout-button .Btn:hover .sign svg {
+    transform: translateX(-10px); /* 用户之前的修改 */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .logout-button .Btn:hover .text {
+    opacity: 1;
+    transform: translateX(0); /* hover时滑入按钮内 */
+    /* width 和 padding-right 从基础样式继承，之前用户修改的width: calc(100% - 8px); 已移至基础样式 */
+  }
+}
+
+/* 移动端下彻底覆盖所有hover相关属性，保证图标居中不动 */
+@media (max-width: 768px) {
+  .logout-button .Btn:hover .sign,
+  .logout-button .Btn:focus .sign,
+  .logout-button .Btn:active .sign {
+    width: 100% !important;
+    justify-content: center !important;
+    left: 0 !important;
+    padding-left: 0 !important;
+    transition: none !important;
+  }
+  .logout-button .Btn:hover .sign svg,
+  .logout-button .Btn:focus .sign svg,
+  .logout-button .Btn:active .sign svg {
+    transform: none !important;
+    margin: 0 auto !important;
+    left: 0 !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .logout-button .sign,
+  .logout-button .Btn:hover .sign,
+  .logout-button .Btn:focus .sign,
+  .logout-button .Btn:active .sign {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  .logout-button .sign svg,
+  .logout-button .Btn:hover .sign svg,
+  .logout-button .Btn:focus .sign svg,
+  .logout-button .Btn:active .sign svg {
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    position: static !important;
+    display: block !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* 登出按钮图标 - 基础状态 */
+.logout-button .sign svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 确保基础状态也有transform过渡 */
+}
+
+/* 桌面端登出按钮hover动画样式仅限于大屏 */
+@media (min-width: 769px) {
+  /* ... 其他 .Btn:hover 和 .Btn:hover .sign 样式保持不变 ... */
+
+  .logout-button .Btn:hover .sign svg {
+    transform: translateX(-10px); /* 用户之前的修改 */
+    /* transition 从基础状态继承，或在此处明确，确保一致性 */
+    /* transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); */ 
+  }
+  
+  /* ... .logout-button .Btn:hover .text 样式保持不变 ... */
+}
+
+/* 搜索弹出框移动端高度限制 */
+@media (max-width: 767.98px) {
+    #searchResultsModal .modal-dialog {
+        margin: 0.5rem;
+        max-height: 80vh;
+    }
+    
+    #searchResultsModal .modal-content {
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #searchResultsModal .modal-body {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    #searchResults {
+        max-height: calc(80vh - 120px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* 已登录状态的可点击样式（跳转到音乐服务器） */
+.status-badge.logged-in-clickable {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    cursor: pointer;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    box-shadow: 
+        0 2px 8px rgba(40, 167, 69, 0.2),
+        0 0 0 0 rgba(40, 167, 69, 0.4);
+    transform: translateY(0);
+}
+
+/* 添加跳转图标 */
+.status-badge.logged-in-clickable::after {
+    content: '🎵';
+    margin-right: 0.3em;
+    font-size: 0.9em;
+    order: -1; /* 确保图标在文字前面 */
+}
+
+/* 音乐图标弹跳动画 */
+/* 已删除 - 不需要上下浮动
+@keyframes music-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+*/
+
+/* 添加内部光效 */
+.status-badge.logged-in-clickable::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        transparent 100%);
+    transition: left 0.6s ease;
+    z-index: 1;
+}
+
+/* 确保文字在光效之上 */
+.status-badge.logged-in-clickable {
+    position: relative;
+    z-index: 2;
+}
+
+.status-badge.logged-in-clickable:hover {
+    background: linear-gradient(135deg, #34ce57 0%, #17a2b8 100%) !important;
+    transform: scale(0.95);
+    box-shadow: 
+        0 8px 25px rgba(40, 167, 69, 0.4),
+        0 0 0 4px rgba(40, 167, 69, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: pulse-glow-green 2s infinite;
+}
+
+/* 光效扫过动画 */
+.status-badge.logged-in-clickable:hover::before {
+    left: 100%;
+}
+
+/* 悬停时图标加速弹跳 */
+.status-badge.logged-in-clickable:hover::after {
+    /* animation: music-bounce-fast 1s ease-in-out infinite; */
+}
+
+/* 已删除 - 不需要快速弹跳动画
+@keyframes music-bounce-fast {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+*/
+
+.status-badge.logged-in-clickable:active {
+    transform: scale(0.92);
+    box-shadow: 
+        0 4px 15px rgba(40, 167, 69, 0.3),
+        0 0 0 2px rgba(40, 167, 69, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #218838 0%, #138496 100%) !important;
+    transition: all 0.1s ease;
+}
+
+/* 绿色脉冲发光动画 */
+@keyframes pulse-glow-green {
+    0%, 100% {
+        box-shadow: 
+            0 8px 25px rgba(40, 167, 69, 0.4),
+            0 0 0 4px rgba(40, 167, 69, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 8px 30px rgba(40, 167, 69, 0.6),
+            0 0 0 6px rgba(40, 167, 69, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+}
